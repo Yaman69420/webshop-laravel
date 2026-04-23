@@ -9,6 +9,8 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,6 +19,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Clean up old product images
+        Storage::disk('public')->deleteDirectory('products');
+        Storage::disk('public')->makeDirectory('products');
+
+        // Copy seed images to storage
+        $seedImagesPath = database_path('seeders/images');
+        $imageMap = [];
+
+        if (File::isDirectory($seedImagesPath)) {
+            foreach (File::files($seedImagesPath) as $file) {
+                $destination = 'products/' . $file->getFilename();
+                Storage::disk('public')->put($destination, File::get($file->getPathname()));
+                $imageMap[$file->getFilenameWithoutExtension()] = $destination;
+            }
+        }
+
         // Admin user
         $admin = User::factory()->create([
             'name' => 'Admin User',
@@ -45,6 +63,7 @@ class DatabaseSeeder extends Seeder
                 'price_in_cents' => 29900,
                 'stock' => 15,
                 'category_id' => $audio->id,
+                'image_path' => $imageMap['headphones'] ?? null,
                 'is_active' => true,
             ]),
             Product::create([
@@ -54,6 +73,7 @@ class DatabaseSeeder extends Seeder
                 'price_in_cents' => 12900,
                 'stock' => 25,
                 'category_id' => $workspace->id,
+                'image_path' => $imageMap['keyboard'] ?? null,
                 'is_active' => true,
             ]),
             Product::create([
@@ -63,6 +83,7 @@ class DatabaseSeeder extends Seeder
                 'price_in_cents' => 49900,
                 'stock' => 8,
                 'category_id' => $workspace->id,
+                'image_path' => $imageMap['monitor'] ?? null,
                 'is_active' => true,
             ]),
             Product::create([
@@ -72,6 +93,7 @@ class DatabaseSeeder extends Seeder
                 'price_in_cents' => 34900,
                 'stock' => 10,
                 'category_id' => $audio->id,
+                'image_path' => $imageMap['headphones-v2'] ?? null,
                 'is_active' => true,
             ]),
             Product::create([
@@ -81,6 +103,7 @@ class DatabaseSeeder extends Seeder
                 'price_in_cents' => 5990,
                 'stock' => 50,
                 'category_id' => $accessoires->id,
+                'image_path' => $imageMap['usb-hub'] ?? null,
                 'is_active' => true,
             ]),
             Product::create([
@@ -90,6 +113,7 @@ class DatabaseSeeder extends Seeder
                 'price_in_cents' => 3490,
                 'stock' => 40,
                 'category_id' => $accessoires->id,
+                'image_path' => $imageMap['desk-mat'] ?? null,
                 'is_active' => true,
             ]),
         ];
