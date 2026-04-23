@@ -15,6 +15,7 @@
         "laravel/tinker": "^3.0",
         "livewire/flux": "^2.13",
         "livewire/livewire": "^4.1",
+        "livewire/volt": "^1.10",
         "stripe/stripe-php": "^20.0"
     },
     "require-dev": {
