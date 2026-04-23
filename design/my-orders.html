@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="nl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mijn Bestellingen | NOVA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nova: {
+                            bg: '#0B0F1A',
+                            surface: '#111827',
+                            card: '#1F2937',
+                            primary: '#818CF8',
+                            secondary: '#A78BFA',
+                            accent: '#C084FC',
+                            success: '#34D399',
+                            warning: '#FBBF24',
+                            info: '#38BDF8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-nova-bg text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="glass sticky top-0 z-40 border-b border-gray-800 animate-fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="products.html" class="flex-shrink-0 flex items-center gap-2">
+                    <i class="ph-fill ph-planet text-3xl text-nova-primary"></i>
+                    <span class="font-bold text-xl tracking-wider gradient-text">NOVA</span>
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="products.html" class="text-gray-400 hover:text-white transition">Shop</a>
+                    <a href="categories.html" class="text-gray-400 hover:text-white transition">Categorieën</a>
+                    <a href="new.html" class="text-gray-400 hover:text-white transition">Nieuw</a>
+                </div>
+
+                <!-- Icons -->
+                <div class="flex items-center space-x-6">
+                    <button class="text-gray-400 hover:text-white transition">
+                        <i class="ph ph-magnifying-glass text-xl"></i>
+                    </button>
+                    <a href="my-orders.html" class="text-nova-primary font-medium">
+                        <i class="ph-fill ph-user text-xl"></i>
+                    </a>
+                    <a href="cart.html" class="text-gray-400 hover:text-white transition relative group">
+                        <i class="ph ph-shopping-cart text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-nova-primary text-white text-xs font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar Account Nav -->
+        <aside class="w-full md:w-64 flex-shrink-0 animate-slide-right">
+            <div class="nova-card p-6">
+                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-800">
+                    <div class="w-12 h-12 rounded-full bg-nova-primary flex items-center justify-center text-xl font-bold text-white">
+                        JD
+                    </div>
+                    <div>
+                        <h2 class="font-semibold text-white">Jan Doe</h2>
+                        <p class="text-xs text-gray-400">jan@example.com</p>
+                    </div>
+                </div>
+
+                <nav class="space-y-1">
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition">
+                        <i class="ph ph-user text-lg"></i> Profiel
+                    </a>
+                    <a href="my-orders.html" class="flex items-center gap-3 px-3 py-2 text-sm text-nova-primary bg-nova-primary/10 rounded-lg font-medium">
+                        <i class="ph-fill ph-package text-lg"></i> Bestellingen
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition">
+                        <i class="ph ph-map-pin text-lg"></i> Adressen
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm text-nova-error hover:bg-red-500/10 rounded-lg transition mt-4">
+                        <i class="ph ph-sign-out text-lg"></i> Uitloggen
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Orders List -->
+        <div class="flex-grow animate-fade-in-up">
+            
+            <h1 class="text-2xl font-bold mb-6">Mijn Bestellingen</h1>
+
+            <!-- Active Order -->
+            <div class="nova-card overflow-hidden mb-6 relative border-nova-primary">
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-nova-primary"></div>
+                <div class="p-6 border-b border-gray-800 bg-nova-surface flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <div class="flex items-center gap-3 mb-1">
+                            <span class="font-mono font-bold text-lg">#ORD-2026-8891</span>
+                            <span class="nova-badge nova-badge-info"><span class="status-dot status-dot-info mr-2"></span>Onderweg</span>
+                        </div>
+                        <p class="text-sm text-gray-400">Geplaatst op 23 April 2026 • 2 items • Totaal: <strong class="text-white">€673.97</strong></p>
+                    </div>
+                    <a href="order-detail.html" class="nova-btn nova-btn-secondary">
+                        Details Bekijken
+                    </a>
+                </div>
+                <div class="p-6">
+                    <div class="flex gap-4 mb-4">
+                        <div class="w-16 h-16 rounded bg-gray-800 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=100&auto=format&fit=crop" class="w-full h-full object-cover opacity-80" alt="Product">
+                        </div>
+                        <div class="w-16 h-16 rounded bg-gray-800 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1600269452121-4f2416e55c28?q=80&w=100&auto=format&fit=crop" class="w-full h-full object-cover opacity-80" alt="Product">
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="mt-6">
+                        <div class="flex justify-between text-xs font-medium text-gray-400 mb-2 px-1">
+                            <span class="text-nova-primary">Verwerkt</span>
+                            <span class="text-nova-primary">Verzonden</span>
+                            <span>Bezorgd</span>
+                        </div>
+                        <div class="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-nova-primary rounded-full relative" style="width: 50%;">
+                                <div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white opacity-30"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Past Order -->
+            <div class="nova-card overflow-hidden mb-6">
+                <div class="p-6 border-b border-gray-800 flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <div class="flex items-center gap-3 mb-1">
+                            <span class="font-mono font-bold text-lg">#ORD-2025-4421</span>
+                            <span class="nova-badge nova-badge-success"><span class="status-dot status-dot-success mr-2"></span>Afgeleverd</span>
+                        </div>
+                        <p class="text-sm text-gray-400">Geplaatst op 12 November 2025 • 1 item • Totaal: <strong class="text-white">€199.00</strong></p>
+                    </div>
+                    <a href="#" class="nova-btn nova-btn-ghost text-sm">
+                        Details
+                    </a>
+                </div>
+                <div class="p-6 flex items-center gap-4">
+                    <div class="w-16 h-16 rounded bg-gray-800 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=100&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 filter grayscale" alt="Product">
+                    </div>
+                    <div class="flex-grow">
+                        <p class="font-medium">UltraWide 34" Display</p>
+                        <p class="text-sm text-gray-400">Afgeleverd op 14 November 2025</p>
+                    </div>
+                    <button class="nova-btn nova-btn-secondary py-1.5 px-3">
+                        <i class="ph ph-arrow-counter-clockwise mr-2"></i> Opnieuw Bestellen
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-center mt-8">
+                <div class="flex gap-2">
+                    <button class="w-8 h-8 rounded-lg bg-nova-primary text-white text-sm font-medium">1</button>
+                    <button class="w-8 h-8 rounded-lg bg-nova-card border border-gray-700 text-gray-400 hover:text-white transition text-sm">2</button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-nova-surface mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+            <p>&copy; 2026 NOVA Webshop. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

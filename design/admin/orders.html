@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="nl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestellingen | NOVA Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../shared.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nova: {
+                            bg: '#0B0F1A',
+                            surface: '#111827',
+                            card: '#1F2937',
+                            primary: '#818CF8',
+                            secondary: '#A78BFA',
+                            accent: '#C084FC',
+                            success: '#34D399',
+                            warning: '#FBBF24',
+                            error: '#FB7185',
+                            info: '#38BDF8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-nova-bg text-gray-100 min-h-screen flex">
+
+    <!-- Admin Sidebar -->
+    <aside class="w-64 bg-nova-surface border-r border-gray-800 flex-shrink-0 flex flex-col hidden md:flex sticky top-0 h-screen">
+        <div class="h-16 flex items-center px-6 border-b border-gray-800">
+            <a href="../products.html" class="flex items-center gap-2">
+                <i class="ph-fill ph-planet text-2xl text-nova-primary"></i>
+                <span class="font-bold text-lg tracking-wider gradient-text">NOVA ADMIN</span>
+            </a>
+        </div>
+        
+        <div class="flex-grow overflow-y-auto py-6 px-4">
+            <nav class="space-y-1">
+                <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition">
+                    <i class="ph ph-squares-four text-lg"></i> Dashboard
+                </a>
+                <div class="pt-4 pb-1">
+                    <p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Catalogus</p>
+                </div>
+                <a href="products.html" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition">
+                    <i class="ph ph-package text-lg"></i> Producten
+                </a>
+                <a href="categories.html" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition">
+                    <i class="ph ph-tag text-lg"></i> Categorieën
+                </a>
+                <div class="pt-4 pb-1">
+                    <p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Verkoop</p>
+                </div>
+                <a href="orders.html" class="flex items-center justify-between px-3 py-2 text-sm text-nova-primary bg-nova-primary/10 rounded-lg font-medium transition group">
+                    <div class="flex items-center gap-3">
+                        <i class="ph-fill ph-shopping-cart text-lg"></i> Bestellingen
+                    </div>
+                    <span class="bg-nova-primary/20 text-nova-primary text-xs font-bold px-2 py-0.5 rounded-full">5</span>
+                </a>
+                <a href="customers.html" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition">
+                    <i class="ph ph-users text-lg"></i> Klanten
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow flex flex-col min-w-0">
+        
+        <header class="h-16 glass sticky top-0 z-30 border-b border-gray-800 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <button class="md:hidden text-gray-400 hover:text-white">
+                <i class="ph ph-list text-2xl"></i>
+            </button>
+            <div class="flex items-center gap-4 ml-auto">
+                <a href="../products.html" class="text-sm text-nova-primary hover:text-nova-secondary transition flex items-center gap-1">
+                    Storefront <i class="ph ph-arrow-square-out"></i>
+                </a>
+            </div>
+        </header>
+
+        <main class="flex-grow p-4 sm:p-6 lg:p-8 animate-fade-in-up">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold">Bestellingen</h1>
+                    <p class="text-gray-400 text-sm mt-1">Beheer en volg bestellingen.</p>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="nova-card p-4 mb-6 flex flex-col sm:flex-row gap-4 justify-between items-center">
+                <div class="relative w-full sm:w-96">
+                    <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Zoek op ordernummer of naam..." class="nova-input pl-10">
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <select class="nova-input py-2 px-3 appearance-none bg-nova-surface border-gray-700 cursor-pointer w-full sm:w-auto text-sm">
+                        <option>Alle Statussen</option>
+                        <option>Nieuw</option>
+                        <option>Verwerken</option>
+                        <option>Verzonden</option>
+                        <option>Afgeleverd</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="nova-card overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="nova-table">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Datum</th>
+                                <th>Klant</th>
+                                <th>Totaal</th>
+                                <th>Status</th>
+                                <th class="text-right">Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Order 1 -->
+                            <tr>
+                                <td class="font-mono text-white font-medium">#ORD-8891</td>
+                                <td>Vandaag, 14:30</td>
+                                <td>
+                                    <p class="font-medium text-white">Jan Doe</p>
+                                    <p class="text-xs text-gray-500">jan@example.com</p>
+                                </td>
+                                <td class="font-medium text-white">€673.97</td>
+                                <td>
+                                    <div class="relative inline-block text-left w-32">
+                                        <select class="nova-badge nova-badge-info cursor-pointer appearance-none bg-transparent w-full focus:outline-none">
+                                            <option value="nieuw" class="bg-nova-card text-white">Nieuw</option>
+                                            <option value="verwerken" class="bg-nova-card text-white">Verwerken</option>
+                                            <option value="verzonden" selected class="bg-nova-card text-white">Verzonden</option>
+                                            <option value="afgeleverd" class="bg-nova-card text-white">Afgeleverd</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-nova-info">
+                                            <i class="ph ph-caret-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <button class="nova-btn nova-btn-secondary py-1 px-3 text-xs" onclick="document.getElementById('orderDetailModal').classList.remove('hidden')">
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Order 2 -->
+                            <tr>
+                                <td class="font-mono text-white font-medium">#ORD-8890</td>
+                                <td>Gisteren, 10:15</td>
+                                <td>
+                                    <p class="font-medium text-white">Anna Smit</p>
+                                    <p class="text-xs text-gray-500">anna@example.com</p>
+                                </td>
+                                <td class="font-medium text-white">€129.00</td>
+                                <td>
+                                    <div class="relative inline-block text-left w-32">
+                                        <select class="nova-badge nova-badge-warning cursor-pointer appearance-none bg-transparent w-full focus:outline-none">
+                                            <option value="nieuw" class="bg-nova-card text-white">Nieuw</option>
+                                            <option value="verwerken" selected class="bg-nova-card text-white">Verwerken</option>
+                                            <option value="verzonden" class="bg-nova-card text-white">Verzonden</option>
+                                            <option value="afgeleverd" class="bg-nova-card text-white">Afgeleverd</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-nova-warning">
+                                            <i class="ph ph-caret-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <button class="nova-btn nova-btn-secondary py-1 px-3 text-xs">
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Order 3 -->
+                            <tr>
+                                <td class="font-mono text-white font-medium">#ORD-8889</td>
+                                <td>21 April 2026</td>
+                                <td>
+                                    <p class="font-medium text-white">Pieter Bos</p>
+                                    <p class="text-xs text-gray-500">pieter@example.com</p>
+                                </td>
+                                <td class="font-medium text-white">€89.95</td>
+                                <td>
+                                    <div class="relative inline-block text-left w-32">
+                                        <select class="nova-badge nova-badge-success cursor-pointer appearance-none bg-transparent w-full focus:outline-none" disabled>
+                                            <option value="afgeleverd" selected class="bg-nova-card text-white">Afgeleverd</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-nova-success opacity-50">
+                                            <i class="ph ph-check text-xs"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-right">
+                                    <button class="nova-btn nova-btn-secondary py-1 px-3 text-xs">
+                                        Details
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="orderDetailModal" class="nova-overlay hidden">
+        <div class="nova-modal max-w-2xl">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-nova-surface rounded-t-2xl">
+                <div>
+                    <h2 class="text-xl font-bold flex items-center gap-3">
+                        Bestelling #ORD-8891
+                        <span class="nova-badge nova-badge-info text-xs">Verzonden</span>
+                    </h2>
+                    <p class="text-sm text-gray-400 mt-1">Geplaatst op 23 Apr 2026, 14:30</p>
+                </div>
+                <button class="text-gray-400 hover:text-white" onclick="document.getElementById('orderDetailModal').classList.add('hidden')">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xs uppercase tracking-wider text-gray-500 font-medium mb-2">Klant & Bezorging</h3>
+                        <div class="text-sm text-gray-300 bg-nova-bg p-4 rounded-lg border border-gray-800">
+                            <p class="font-medium text-white">Jan Doe</p>
+                            <p>jan@example.com</p>
+                            <p class="mt-2">Straatnaam 123</p>
+                            <p>1234 AB Amsterdam</p>
+                            <p>Nederland</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xs uppercase tracking-wider text-gray-500 font-medium mb-2">Betaling</h3>
+                        <div class="text-sm text-gray-300 bg-nova-bg p-4 rounded-lg border border-gray-800">
+                            <p class="flex items-center gap-2"><i class="ph-fill ph-credit-card text-lg text-nova-primary"></i> Creditcard (4242)</p>
+                            <p class="mt-2 text-nova-success font-medium"><i class="ph-fill ph-check-circle mr-1"></i> Betaald</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs uppercase tracking-wider text-gray-500 font-medium mb-2">Artikelen (2)</h3>
+                    <div class="border border-gray-800 rounded-lg overflow-hidden">
+                        <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-nova-bg">
+                            <div class="flex gap-3 items-center">
+                                <div class="w-10 h-10 bg-gray-800 rounded overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=100&auto=format&fit=crop" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-white">Nova Pro Wireless</p>
+                                    <p class="text-xs text-gray-500">Zwart</p>
+                                </div>
+                            </div>
+                            <div class="text-right text-sm">
+                                <p>1 x €299.00</p>
+                                <p class="font-medium text-white">€299.00</p>
+                            </div>
+                        </div>
+                        <div class="p-3 border-b border-gray-800 flex justify-between items-center bg-nova-bg">
+                            <div class="flex gap-3 items-center">
+                                <div class="w-10 h-10 bg-gray-800 rounded overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1600269452121-4f2416e55c28?q=80&w=100&auto=format&fit=crop" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-white">Mechanical Keychron</p>
+                                    <p class="text-xs text-gray-500">Red Linear</p>
+                                </div>
+                            </div>
+                            <div class="text-right text-sm">
+                                <p>2 x €129.00</p>
+                                <p class="font-medium text-white">€258.00</p>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-nova-surface space-y-2 text-sm text-right">
+                            <p class="text-gray-400">Subtotaal: €557.00</p>
+                            <p class="text-gray-400">Verzending: €0.00</p>
+                            <p class="text-gray-400">BTW (21%): €116.97</p>
+                            <p class="font-bold text-lg text-white mt-2 pt-2 border-t border-gray-800">Totaal: €673.97</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-800 flex justify-end">
+                <button class="nova-btn nova-btn-secondary" onclick="document.getElementById('orderDetailModal').classList.add('hidden')">Sluiten</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

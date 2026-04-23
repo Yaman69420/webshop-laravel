@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="nl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestelling Details | NOVA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nova: {
+                            bg: '#0B0F1A',
+                            surface: '#111827',
+                            card: '#1F2937',
+                            primary: '#818CF8',
+                            secondary: '#A78BFA',
+                            accent: '#C084FC',
+                            success: '#34D399',
+                            warning: '#FBBF24',
+                            info: '#38BDF8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-nova-bg text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="glass sticky top-0 z-40 border-b border-gray-800 animate-fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="products.html" class="flex-shrink-0 flex items-center gap-2">
+                    <i class="ph-fill ph-planet text-3xl text-nova-primary"></i>
+                    <span class="font-bold text-xl tracking-wider gradient-text">NOVA</span>
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="products.html" class="text-gray-400 hover:text-white transition">Shop</a>
+                    <a href="categories.html" class="text-gray-400 hover:text-white transition">Categorieën</a>
+                    <a href="new.html" class="text-gray-400 hover:text-white transition">Nieuw</a>
+                </div>
+
+                <!-- Icons -->
+                <div class="flex items-center space-x-6">
+                    <button class="text-gray-400 hover:text-white transition">
+                        <i class="ph ph-magnifying-glass text-xl"></i>
+                    </button>
+                    <a href="my-orders.html" class="text-nova-primary font-medium">
+                        <i class="ph-fill ph-user text-xl"></i>
+                    </a>
+                    <a href="cart.html" class="text-gray-400 hover:text-white transition relative group">
+                        <i class="ph ph-shopping-cart text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-nova-primary text-white text-xs font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full animate-fade-in-up">
+        
+        <div class="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
+            <div>
+                <a href="my-orders.html" class="text-gray-400 hover:text-white flex items-center gap-2 transition w-fit mb-4 text-sm">
+                    <i class="ph ph-arrow-left"></i> Terug naar overzicht
+                </a>
+                <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-3 flex-wrap">
+                    Bestelling #ORD-2026-8891
+                    <span class="nova-badge nova-badge-info text-sm px-3 py-1"><span class="status-dot status-dot-info mr-2"></span>Onderweg</span>
+                </h1>
+                <p class="text-gray-400 mt-2">Geplaatst op 23 April 2026 om 14:30</p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button class="nova-btn nova-btn-secondary text-sm">
+                    <i class="ph ph-download-simple mr-2"></i> Factuur PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Timeline -->
+        <div class="nova-card p-6 md:p-8 mb-8 border-nova-primary relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-nova-primary/5 to-transparent pointer-events-none"></div>
+            
+            <h2 class="font-semibold text-lg mb-6 relative z-10">Zending Status</h2>
+            
+            <div class="relative z-10 hidden md:block">
+                <div class="absolute left-0 top-1/2 w-full h-1 bg-gray-800 -translate-y-1/2 z-0"></div>
+                <div class="absolute left-0 top-1/2 w-1/2 h-1 bg-nova-primary -translate-y-1/2 z-0 shadow-[0_0_10px_rgba(129,140,248,0.5)]"></div>
+                
+                <div class="flex justify-between relative z-10">
+                    <div class="flex flex-col items-center">
+                        <div class="w-10 h-10 rounded-full bg-nova-primary text-white flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(129,140,248,0.4)]">
+                            <i class="ph-fill ph-check"></i>
+                        </div>
+                        <span class="text-sm font-medium text-white">Besteld</span>
+                        <span class="text-xs text-gray-500">23 Apr, 14:30</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-10 h-10 rounded-full bg-nova-primary text-white flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(129,140,248,0.4)]">
+                            <i class="ph-fill ph-package"></i>
+                        </div>
+                        <span class="text-sm font-medium text-white">Verwerkt</span>
+                        <span class="text-xs text-gray-500">23 Apr, 16:45</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-10 h-10 rounded-full border-2 border-nova-primary bg-nova-card text-nova-primary flex items-center justify-center mb-2 shadow-[0_0_10px_rgba(129,140,248,0.2)]">
+                            <i class="ph-fill ph-truck animate-pulse"></i>
+                        </div>
+                        <span class="text-sm font-medium text-nova-primary">Onderweg</span>
+                        <span class="text-xs text-gray-500">Verwacht: Morgen</span>
+                    </div>
+                    <div class="flex flex-col items-center opacity-50">
+                        <div class="w-10 h-10 rounded-full border-2 border-gray-700 bg-nova-surface text-gray-500 flex items-center justify-center mb-2">
+                            <i class="ph ph-house"></i>
+                        </div>
+                        <span class="text-sm font-medium text-gray-400">Bezorgd</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Timeline (Vertical) -->
+            <div class="md:hidden space-y-6 relative">
+                <div class="absolute left-5 top-2 bottom-2 w-0.5 bg-gray-800 z-0"></div>
+                <div class="absolute left-5 top-2 h-1/2 w-0.5 bg-nova-primary z-0"></div>
+                
+                <div class="flex gap-4 relative z-10">
+                    <div class="w-10 h-10 rounded-full bg-nova-primary text-white flex items-center justify-center flex-shrink-0">
+                        <i class="ph-fill ph-check"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium">Besteld</p>
+                        <p class="text-xs text-gray-400">23 April 2026, 14:30</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 relative z-10">
+                    <div class="w-10 h-10 rounded-full bg-nova-primary text-white flex items-center justify-center flex-shrink-0">
+                        <i class="ph-fill ph-package"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium">Verwerkt</p>
+                        <p class="text-xs text-gray-400">23 April 2026, 16:45</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 relative z-10">
+                    <div class="w-10 h-10 rounded-full border-2 border-nova-primary bg-nova-card text-nova-primary flex items-center justify-center flex-shrink-0">
+                        <i class="ph-fill ph-truck"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-nova-primary">Onderweg</p>
+                        <p class="text-xs text-nova-primary">Verwacht: Morgen tussen 14:00 - 18:00</p>
+                        <a href="#" class="text-xs text-white underline mt-1 inline-block">Track & Trace</a>
+                    </div>
+                </div>
+                <div class="flex gap-4 relative z-10 opacity-50">
+                    <div class="w-10 h-10 rounded-full border-2 border-gray-700 bg-nova-surface text-gray-500 flex items-center justify-center flex-shrink-0">
+                        <i class="ph ph-house"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium">Bezorgd</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Items List -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="nova-card overflow-hidden">
+                    <div class="p-4 border-b border-gray-800 bg-nova-surface font-semibold text-lg">
+                        Artikelen (2)
+                    </div>
+                    
+                    <div class="divide-y divide-gray-800">
+                        <!-- Item 1 -->
+                        <div class="p-4 flex gap-4 hover:bg-white/[0.02] transition">
+                            <div class="w-20 h-20 rounded bg-gray-800 flex-shrink-0 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Nova Pro">
+                            </div>
+                            <div class="flex-grow flex flex-col justify-center">
+                                <a href="product-detail.html" class="font-semibold text-white hover:text-nova-primary transition">Nova Pro Wireless</a>
+                                <p class="text-sm text-gray-400">Kleur: Zwart</p>
+                                <p class="text-sm text-gray-400 mt-1">Aantal: 1</p>
+                            </div>
+                            <div class="font-medium flex items-center">
+                                €299.00
+                            </div>
+                        </div>
+                        
+                        <!-- Item 2 -->
+                        <div class="p-4 flex gap-4 hover:bg-white/[0.02] transition">
+                            <div class="w-20 h-20 rounded bg-gray-800 flex-shrink-0 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1600269452121-4f2416e55c28?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Keyboard">
+                            </div>
+                            <div class="flex-grow flex flex-col justify-center">
+                                <a href="product-detail.html" class="font-semibold text-white hover:text-nova-primary transition">Mechanical Keychron</a>
+                                <p class="text-sm text-gray-400">Switch: Red Linear</p>
+                                <p class="text-sm text-gray-400 mt-1">Aantal: 2</p>
+                            </div>
+                            <div class="font-medium flex flex-col justify-center items-end">
+                                <span>€258.00</span>
+                                <span class="text-xs text-gray-500">2x €129.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary & Details Sidebar -->
+            <div class="space-y-6">
+                <!-- Cost Summary -->
+                <div class="nova-card p-6">
+                    <h2 class="font-semibold text-lg mb-4">Overzicht</h2>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between text-gray-300">
+                            <span>Subtotaal</span>
+                            <span>€557.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Verzending</span>
+                            <span class="text-nova-success">Gratis</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>BTW (21%)</span>
+                            <span>€116.97</span>
+                        </div>
+                        <div class="border-t border-gray-800 pt-3 mt-3 flex justify-between items-end font-semibold">
+                            <span class="text-base">Totaal</span>
+                            <span class="text-xl text-white">€673.97</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Addresses -->
+                <div class="nova-card p-6">
+                    <h2 class="font-semibold text-lg mb-4">Adresgegevens</h2>
+                    
+                    <div class="mb-5">
+                        <h3 class="text-xs uppercase tracking-wider text-gray-500 font-medium mb-2">Bezorgadres</h3>
+                        <div class="text-sm text-gray-300 space-y-1">
+                            <p class="font-medium text-white">Jan Doe</p>
+                            <p>Straatnaam 123</p>
+                            <p>1234 AB Amsterdam</p>
+                            <p>Nederland</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xs uppercase tracking-wider text-gray-500 font-medium mb-2">Factuuradres</h3>
+                        <div class="text-sm text-gray-300">
+                            <p>Zelfde als bezorgadres</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment -->
+                <div class="nova-card p-6">
+                    <h2 class="font-semibold text-lg mb-4">Betaling</h2>
+                    <div class="flex items-center gap-3 text-sm text-gray-300">
+                        <div class="w-10 h-6 bg-gray-800 rounded border border-gray-700 flex items-center justify-center">
+                            <i class="ph-fill ph-credit-card text-gray-400"></i>
+                        </div>
+                        <div>
+                            <p>Creditcard eindigend op <strong>4242</strong></p>
+                            <p class="text-xs text-nova-success mt-0.5">Betaald op 23 Apr, 14:31</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-nova-surface mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+            <p>&copy; 2026 NOVA Webshop. Alle rechten voorbehouden.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

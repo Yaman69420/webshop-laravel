@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="nl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afrekenen | NOVA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nova: {
+                            bg: '#0B0F1A',
+                            surface: '#111827',
+                            card: '#1F2937',
+                            primary: '#818CF8',
+                            secondary: '#A78BFA',
+                            accent: '#C084FC',
+                            success: '#34D399',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-nova-bg text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Minimal Header for Checkout -->
+    <header class="glass sticky top-0 z-40 border-b border-gray-800 animate-fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="products.html" class="flex-shrink-0 flex items-center gap-2">
+                    <i class="ph-fill ph-planet text-3xl text-nova-primary"></i>
+                    <span class="font-bold text-xl tracking-wider gradient-text">NOVA</span>
+                </a>
+                
+                <div class="flex items-center gap-2 text-sm text-gray-400">
+                    <i class="ph ph-lock-key text-lg"></i>
+                    <span>Beveiligde Checkout</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+        
+        <div class="mb-8 animate-fade-in-up">
+            <a href="cart.html" class="text-nova-primary hover:text-nova-secondary flex items-center gap-2 transition w-fit mb-4">
+                <i class="ph ph-arrow-left"></i> Terug naar winkelmand
+            </a>
+            <h1 class="text-3xl font-bold">Afrekenen</h1>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Checkout Form -->
+            <div class="flex-grow space-y-8 animate-slide-right">
+                
+                <!-- Contact Info -->
+                <div class="nova-card p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 rounded-full bg-nova-primary text-white flex items-center justify-center font-bold">1</div>
+                        <h2 class="text-xl font-semibold">Contactgegevens</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">E-mailadres</label>
+                            <input type="email" class="nova-input" placeholder="jouw@email.nl" value="jan@example.com">
+                        </div>
+                        <label class="flex items-center gap-3 cursor-pointer group mt-2">
+                            <input type="checkbox" checked class="w-4 h-4 rounded border-gray-600 bg-nova-surface text-nova-primary focus:ring-nova-primary focus:ring-offset-nova-bg">
+                            <span class="text-sm text-gray-400 group-hover:text-white transition">Houd mij op de hoogte van nieuws en exclusieve aanbiedingen</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Shipping Address -->
+                <div class="nova-card p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 rounded-full bg-nova-primary text-white flex items-center justify-center font-bold">2</div>
+                        <h2 class="text-xl font-semibold">Verzendadres</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Voornaam</label>
+                            <input type="text" class="nova-input" placeholder="Voornaam">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Achternaam</label>
+                            <input type="text" class="nova-input" placeholder="Achternaam">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Straat en huisnummer</label>
+                            <input type="text" class="nova-input" placeholder="Straatnaam 123">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Postcode</label>
+                            <input type="text" class="nova-input" placeholder="1234 AB">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Woonplaats</label>
+                            <input type="text" class="nova-input" placeholder="Amsterdam">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Land</label>
+                            <select class="nova-input bg-nova-bg appearance-none">
+                                <option>Nederland</option>
+                                <option>België</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Info (Stripe Placeholder) -->
+                <div class="nova-card p-6 md:p-8 relative overflow-hidden border-nova-primary">
+                    <div class="absolute top-0 right-0 p-4">
+                        <i class="ph-fill ph-shield-check text-4xl text-nova-primary opacity-20"></i>
+                    </div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-8 h-8 rounded-full bg-nova-primary text-white flex items-center justify-center font-bold">3</div>
+                        <h2 class="text-xl font-semibold">Betaling</h2>
+                    </div>
+                    
+                    <div class="bg-nova-surface border border-gray-700 rounded-lg p-6 mb-6">
+                        <p class="text-sm text-gray-400 mb-4">Selecteer een betaalmethode (Stripe Integratie volgt)</p>
+                        
+                        <div class="space-y-3">
+                            <label class="flex items-center justify-between p-4 border border-nova-primary rounded-lg bg-nova-card cursor-pointer">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="payment" checked class="w-4 h-4 text-nova-primary bg-nova-surface border-gray-600 focus:ring-nova-primary">
+                                    <span class="font-medium">Creditcard</span>
+                                </div>
+                                <div class="flex gap-1">
+                                    <i class="ph-fill ph-credit-card text-2xl text-gray-300"></i>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center justify-between p-4 border border-gray-700 rounded-lg hover:bg-nova-card cursor-pointer transition">
+                                <div class="flex items-center gap-3">
+                                    <input type="radio" name="payment" class="w-4 h-4 text-nova-primary bg-nova-surface border-gray-600 focus:ring-nova-primary">
+                                    <span class="font-medium">iDEAL</span>
+                                </div>
+                                <div class="flex gap-1">
+                                    <i class="ph-fill ph-bank text-2xl text-gray-300"></i>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Card Element Placeholder -->
+                        <div class="mt-6">
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Kaartgegevens</label>
+                            <div class="flex gap-4">
+                                <div class="flex-grow">
+                                    <input type="text" class="nova-input font-mono" placeholder="0000 0000 0000 0000">
+                                </div>
+                                <div class="w-24">
+                                    <input type="text" class="nova-input font-mono text-center" placeholder="MM/YY">
+                                </div>
+                                <div class="w-24">
+                                    <input type="text" class="nova-input font-mono text-center" placeholder="CVC">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Order Summary Sidebar -->
+            <div class="w-full lg:w-96 flex-shrink-0 animate-slide-left">
+                <div class="nova-card p-6 sticky top-24">
+                    <h2 class="text-xl font-semibold mb-6">Overzicht</h2>
+                    
+                    <!-- Items -->
+                    <div class="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2">
+                        <!-- Item 1 -->
+                        <div class="flex gap-4">
+                            <div class="w-16 h-16 rounded bg-gray-800 flex-shrink-0 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=100&auto=format&fit=crop" alt="Nova Pro" class="w-full h-full object-cover">
+                                <span class="absolute -top-1 -right-1 bg-nova-surface text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border border-gray-700">1</span>
+                            </div>
+                            <div class="flex flex-col justify-center flex-grow">
+                                <span class="font-medium text-sm">Nova Pro Wireless</span>
+                                <span class="text-xs text-gray-400">Zwart</span>
+                            </div>
+                            <div class="flex items-center text-sm font-medium">
+                                €299.00
+                            </div>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="flex gap-4">
+                            <div class="w-16 h-16 rounded bg-gray-800 flex-shrink-0 relative overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1600269452121-4f2416e55c28?q=80&w=100&auto=format&fit=crop" alt="Keyboard" class="w-full h-full object-cover">
+                                <span class="absolute -top-1 -right-1 bg-nova-surface text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border border-gray-700">2</span>
+                            </div>
+                            <div class="flex flex-col justify-center flex-grow">
+                                <span class="font-medium text-sm">Mechanical Keychron</span>
+                                <span class="text-xs text-gray-400">Red Linear</span>
+                            </div>
+                            <div class="flex items-center text-sm font-medium">
+                                €258.00
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-800 pt-4 mb-4 space-y-3 text-sm">
+                        <div class="flex justify-between text-gray-300">
+                            <span>Subtotaal</span>
+                            <span>€557.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Verzending</span>
+                            <span class="text-nova-success">Gratis</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>BTW (21%)</span>
+                            <span>€116.97</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-gray-800 pt-4 mb-8">
+                        <div class="flex justify-between items-end">
+                            <span class="text-lg font-medium">Totaal</span>
+                            <span class="text-2xl font-bold gradient-text">€673.97</span>
+                        </div>
+                    </div>
+
+                    <a href="success.html" class="nova-btn nova-btn-primary w-full h-12 text-base shadow-[0_0_20px_rgba(129,140,248,0.4)] flex justify-center items-center gap-2">
+                        <i class="ph-fill ph-lock-key text-lg"></i>
+                        Betalen & Bestellen
+                    </a>
+                    
+                    <p class="text-xs text-center text-gray-500 mt-4">
+                        Door je bestelling te plaatsen, ga je akkoord met onze <a href="#" class="text-nova-primary hover:underline">Algemene Voorwaarden</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-nova-surface mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center text-sm text-gray-500">
+            <p>&copy; 2026 NOVA Webshop. Alle rechten voorbehouden.</p>
+            <div class="flex items-center gap-2">
+                <i class="ph-fill ph-shield-check text-xl text-nova-primary"></i>
+                <span>Veilige afrekenomgeving</span>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

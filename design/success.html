@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="nl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestelling Gelukt | NOVA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nova: {
+                            bg: '#0B0F1A',
+                            surface: '#111827',
+                            card: '#1F2937',
+                            primary: '#818CF8',
+                            secondary: '#A78BFA',
+                            accent: '#C084FC',
+                            success: '#34D399',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background-color: var(--nova-primary);
+            opacity: 0;
+        }
+        @keyframes fall {
+            0% { opacity: 1; transform: translateY(-100vh) rotate(0deg); }
+            100% { opacity: 0; transform: translateY(100vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-nova-bg text-gray-100 min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+
+    <!-- Confetti Background (CSS Only Mockup) -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div class="confetti-piece" style="left: 10%; background-color: var(--nova-primary); animation: fall 3s linear infinite;"></div>
+        <div class="confetti-piece" style="left: 30%; background-color: var(--nova-secondary); animation: fall 4s linear infinite 1s;"></div>
+        <div class="confetti-piece" style="left: 50%; background-color: var(--nova-accent); animation: fall 3.5s linear infinite 0.5s;"></div>
+        <div class="confetti-piece" style="left: 70%; background-color: var(--nova-success); animation: fall 4.5s linear infinite 2s;"></div>
+        <div class="confetti-piece" style="left: 90%; background-color: var(--nova-primary); animation: fall 3s linear infinite 1.5s;"></div>
+    </div>
+
+    <main class="w-full max-w-2xl px-4 z-10">
+        <div class="nova-card p-8 md:p-12 text-center animate-fade-in-scale">
+            
+            <div class="w-20 h-20 rounded-full bg-green-500/10 text-nova-success mx-auto flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(52,211,153,0.3)] relative">
+                <i class="ph-fill ph-check-circle text-5xl"></i>
+            </div>
+
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Bedankt voor je bestelling!</h1>
+            <p class="text-gray-400 text-lg mb-2">We hebben je bestelling succesvol ontvangen.</p>
+            <p class="text-gray-500 mb-8">Een bevestigingsmail is verzonden naar <strong class="text-white">jan@example.com</strong>.</p>
+
+            <div class="bg-nova-surface border border-gray-800 rounded-xl p-6 mb-8 text-left max-w-md mx-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-400">Ordernummer:</span>
+                    <span class="font-mono font-bold text-white">#ORD-2026-8891</span>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-400">Totaalbedrag:</span>
+                    <span class="font-bold text-white">€673.97</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-400">Verwachte bezorging:</span>
+                    <span class="font-medium text-white text-right">Morgen,<br>tussen 14:00 - 18:00</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="order-detail.html" class="nova-btn nova-btn-secondary">
+                    Bekijk Bestelling
+                </a>
+                <a href="products.html" class="nova-btn nova-btn-primary">
+                    Verder Winkelen <i class="ph ph-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="absolute bottom-6 text-sm text-gray-500">
+        &copy; 2026 NOVA Webshop
+    </footer>
+
+</body>
+</html>
