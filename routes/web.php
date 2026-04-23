@@ -17,7 +17,7 @@ Volt::route('/cart', 'cart.index')->name('cart.index');
 // Auth-protected Storefront Routes
 // ──────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::redirect('/dashboard', '/')->name('dashboard');
+    Route::get('/home', fn () => redirect('/'))->name('dashboard');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -28,9 +28,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ──────────────────────────────────────────────
-// Admin Routes
+// Admin Routes (under /dashboard)
 // ──────────────────────────────────────────────
-Route::middleware(['auth', 'is_admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'is_admin'])->prefix('dashboard')->group(function () {
     Volt::route('/', 'admin.dashboard')->name('admin.dashboard');
     Volt::route('/products', 'admin.products')->name('admin.products');
     Volt::route('/categories', 'admin.categories')->name('admin.categories');
@@ -39,4 +39,4 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->group(function () {
     Volt::route('/customers/{user}', 'admin.customer-detail')->name('admin.customers.show');
 });
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';
