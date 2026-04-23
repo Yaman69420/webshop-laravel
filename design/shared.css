@@ -1,0 +1,478 @@
+/* ============================================
+   NOVA WEBSHOP — Design System
+   ============================================ */
+
+/* --- CSS Custom Properties --- */
+:root {
+  --nova-bg:         #0B0F1A;
+  --nova-surface:    #111827;
+  --nova-card:       #1F2937;
+  --nova-card-hover: #263044;
+  --nova-border:     rgba(255, 255, 255, 0.06);
+  --nova-border-hover: rgba(255, 255, 255, 0.12);
+
+  --nova-primary:    #818CF8;
+  --nova-primary-hover: #6366F1;
+  --nova-secondary:  #A78BFA;
+  --nova-accent:     #C084FC;
+
+  --nova-success:    #34D399;
+  --nova-warning:    #FBBF24;
+  --nova-error:      #FB7185;
+  --nova-info:       #38BDF8;
+
+  --nova-text:       #F9FAFB;
+  --nova-text-secondary: #9CA3AF;
+  --nova-text-muted: #6B7280;
+
+  --nova-gradient:   linear-gradient(135deg, #818CF8 0%, #A78BFA 50%, #C084FC 100%);
+  --nova-gradient-subtle: linear-gradient(135deg, rgba(129,140,248,0.1) 0%, rgba(167,139,250,0.05) 100%);
+  --nova-glass:      rgba(17, 24, 39, 0.8);
+  --nova-glass-border: rgba(255, 255, 255, 0.08);
+
+  --nova-radius:     0.75rem;
+  --nova-radius-lg:  1rem;
+  --nova-radius-xl:  1.5rem;
+
+  --nova-shadow:     0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -2px rgba(0,0,0,0.2);
+  --nova-shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -4px rgba(0,0,0,0.3);
+  --nova-shadow-glow: 0 0 20px rgba(129,140,248,0.15);
+}
+
+/* --- Base Resets --- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nova-card) var(--nova-bg);
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--nova-bg);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--nova-card);
+  border-radius: 3px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--nova-bg);
+  color: var(--nova-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(129,140,248,0.4); }
+  50% { box-shadow: 0 0 20px 4px rgba(129,140,248,0.2); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes checkmark {
+  0% { stroke-dashoffset: 100; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes counter {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* --- Utility Classes --- */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.4s ease-out forwards;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.5s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Stagger children */
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(9) { animation-delay: 0.45s; }
+.stagger-children > *:nth-child(10) { animation-delay: 0.5s; }
+.stagger-children > *:nth-child(11) { animation-delay: 0.55s; }
+.stagger-children > *:nth-child(12) { animation-delay: 0.6s; }
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(90deg, var(--nova-card) 25%, var(--nova-card-hover) 50%, var(--nova-card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--nova-radius);
+}
+
+/* Glass effect */
+.glass {
+  background: var(--nova-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--nova-glass-border);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: var(--nova-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card base */
+.nova-card {
+  background: var(--nova-card);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--nova-radius-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nova-card:hover {
+  border-color: var(--nova-border-hover);
+  box-shadow: var(--nova-shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Button styles */
+.nova-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: var(--nova-radius);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.nova-btn-primary {
+  background: var(--nova-gradient);
+  color: white;
+  box-shadow: 0 2px 8px rgba(129,140,248,0.3);
+}
+
+.nova-btn-primary:hover {
+  box-shadow: 0 4px 16px rgba(129,140,248,0.4);
+  transform: translateY(-1px);
+}
+
+.nova-btn-secondary {
+  background: var(--nova-card);
+  color: var(--nova-text);
+  border: 1px solid var(--nova-border);
+}
+
+.nova-btn-secondary:hover {
+  background: var(--nova-card-hover);
+  border-color: var(--nova-border-hover);
+}
+
+.nova-btn-ghost {
+  background: transparent;
+  color: var(--nova-text-secondary);
+}
+
+.nova-btn-ghost:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--nova-text);
+}
+
+.nova-btn-danger {
+  background: rgba(251,113,133,0.1);
+  color: var(--nova-error);
+  border: 1px solid rgba(251,113,133,0.2);
+}
+
+.nova-btn-danger:hover {
+  background: rgba(251,113,133,0.2);
+}
+
+/* Input styles */
+.nova-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background: var(--nova-bg);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--nova-radius);
+  color: var(--nova-text);
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.nova-input:focus {
+  border-color: var(--nova-primary);
+  box-shadow: 0 0 0 3px rgba(129,140,248,0.15);
+}
+
+.nova-input::placeholder {
+  color: var(--nova-text-muted);
+}
+
+/* Badge styles */
+.nova-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  letter-spacing: 0.025em;
+}
+
+.nova-badge-success {
+  background: rgba(52,211,153,0.1);
+  color: var(--nova-success);
+  border: 1px solid rgba(52,211,153,0.2);
+}
+
+.nova-badge-warning {
+  background: rgba(251,191,36,0.1);
+  color: var(--nova-warning);
+  border: 1px solid rgba(251,191,36,0.2);
+}
+
+.nova-badge-error {
+  background: rgba(251,113,133,0.1);
+  color: var(--nova-error);
+  border: 1px solid rgba(251,113,133,0.2);
+}
+
+.nova-badge-info {
+  background: rgba(56,189,248,0.1);
+  color: var(--nova-info);
+  border: 1px solid rgba(56,189,248,0.2);
+}
+
+.nova-badge-primary {
+  background: rgba(129,140,248,0.1);
+  color: var(--nova-primary);
+  border: 1px solid rgba(129,140,248,0.2);
+}
+
+/* Table styles */
+.nova-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.nova-table thead th {
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--nova-text-muted);
+  border-bottom: 1px solid var(--nova-border);
+  text-align: left;
+}
+
+.nova-table tbody td {
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--nova-border);
+  color: var(--nova-text-secondary);
+}
+
+.nova-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.nova-table tbody tr:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+.nova-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Modal overlay */
+.nova-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nova-modal {
+  background: var(--nova-surface);
+  border: 1px solid var(--nova-border);
+  border-radius: var(--nova-radius-xl);
+  box-shadow: var(--nova-shadow-lg);
+  max-width: 32rem;
+  width: 100%;
+  margin: 1rem;
+  animation: fadeInScale 0.3s ease-out;
+}
+
+/* Tooltip */
+.nova-tooltip {
+  position: relative;
+}
+
+.nova-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  background: var(--nova-card);
+  color: var(--nova-text);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  border: 1px solid var(--nova-border);
+}
+
+.nova-tooltip:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* Status dot */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot-success { background: var(--nova-success); box-shadow: 0 0 6px rgba(52,211,153,0.4); }
+.status-dot-warning { background: var(--nova-warning); box-shadow: 0 0 6px rgba(251,191,36,0.4); }
+.status-dot-error { background: var(--nova-error); box-shadow: 0 0 6px rgba(251,113,133,0.4); }
+.status-dot-info { background: var(--nova-info); box-shadow: 0 0 6px rgba(56,189,248,0.4); }
+
+/* Empty state */
+.nova-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.nova-empty svg {
+  width: 4rem;
+  height: 4rem;
+  color: var(--nova-text-muted);
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Product image placeholder */
+.nova-img-placeholder {
+  background: linear-gradient(135deg, var(--nova-card) 0%, var(--nova-card-hover) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.nova-img-placeholder::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--nova-gradient-subtle);
+  opacity: 0.5;
+}
+
+/* Number counter animation */
+.nova-counter {
+  animation: counter 0.5s ease-out;
+}
+
+/* Focus ring */
+.nova-focus:focus-visible {
+  outline: 2px solid var(--nova-primary);
+  outline-offset: 2px;
+}
