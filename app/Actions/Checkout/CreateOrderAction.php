@@ -3,6 +3,7 @@
 namespace App\Actions\Checkout;
 
 use App\Enums\OrderStatus;
+use App\Events\OrderPlaced;
 use App\Models\Order;
 use App\Models\User;
 use App\Services\CartService;
@@ -49,6 +50,8 @@ class CreateOrderAction
             }
 
             $this->cartService->clear();
+
+            OrderPlaced::dispatch($order);
 
             return $order;
         });
