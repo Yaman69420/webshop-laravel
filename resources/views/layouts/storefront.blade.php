@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'NOVA Webshop' }}</title>
     @include('partials.head')
+    @fluxStyles
     @livewireStyles
 </head>
 <body class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
@@ -18,6 +19,7 @@
 
     <x-storefront.footer />
 
+    @fluxScripts
     @livewireScripts
 </body>
 </html>
