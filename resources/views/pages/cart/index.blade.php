@@ -28,12 +28,14 @@ class extends Component
     {
         app(\App\Actions\Cart\UpdateCartItemAction::class)->execute($productId, $quantity);
         unset($this->cartItems, $this->totalInCents);
+        $this->dispatch('cart-updated');
     }
 
     public function removeItem(int $productId): void
     {
         app(\App\Actions\Cart\RemoveFromCartAction::class)->execute($productId);
         unset($this->cartItems, $this->totalInCents);
+        $this->dispatch('cart-updated');
     }
 
     public function formattedTotal(): string
