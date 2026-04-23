@@ -37,8 +37,9 @@ class DatabaseSeeder extends Seeder
 
         // Admin user
         $admin = User::factory()->create([
-            'name' => 'Admin User',
+            'name' => 'admin',
             'email' => 'admin@nova.test',
+            'password' => bcrypt('12345678!'),
             'is_admin' => true,
         ]);
 
