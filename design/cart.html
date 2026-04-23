@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="nl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winkelmand | NOVA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nova: {
+                            bg: '#0B0F1A',
+                            surface: '#111827',
+                            card: '#1F2937',
+                            primary: '#818CF8',
+                            secondary: '#A78BFA',
+                            accent: '#C084FC',
+                            error: '#FB7185',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-nova-bg text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="glass sticky top-0 z-40 border-b border-gray-800 animate-fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="products.html" class="flex-shrink-0 flex items-center gap-2">
+                    <i class="ph-fill ph-planet text-3xl text-nova-primary"></i>
+                    <span class="font-bold text-xl tracking-wider gradient-text">NOVA</span>
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="products.html" class="text-gray-400 hover:text-white transition">Shop</a>
+                    <a href="categories.html" class="text-gray-400 hover:text-white transition">Categorieën</a>
+                    <a href="new.html" class="text-gray-400 hover:text-white transition">Nieuw</a>
+                </div>
+
+                <!-- Icons -->
+                <div class="flex items-center space-x-6">
+                    <button class="text-gray-400 hover:text-white transition">
+                        <i class="ph ph-magnifying-glass text-xl"></i>
+                    </button>
+                    <a href="my-orders.html" class="text-gray-400 hover:text-white transition">
+                        <i class="ph ph-user text-xl"></i>
+                    </a>
+                    <a href="cart.html" class="text-nova-primary font-medium relative group">
+                        <i class="ph-fill ph-shopping-cart text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-nova-primary text-white text-xs font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">3</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+        
+        <h1 class="text-3xl font-bold mb-8 animate-fade-in-up">Winkelmand</h1>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- Cart Items -->
+            <div class="flex-grow animate-slide-right">
+                
+                <div class="nova-card overflow-hidden">
+                    <!-- Headers -->
+                    <div class="hidden md:grid grid-cols-12 gap-4 p-4 border-b border-gray-800 text-sm font-medium text-gray-400 uppercase tracking-wider bg-nova-surface">
+                        <div class="col-span-6">Product</div>
+                        <div class="col-span-2 text-center">Aantal</div>
+                        <div class="col-span-2 text-right">Prijs</div>
+                        <div class="col-span-2 text-right">Totaal</div>
+                    </div>
+
+                    <!-- Item 1 -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 md:p-6 border-b border-gray-800 items-center hover:bg-white/[0.02] transition">
+                        <div class="col-span-1 md:col-span-6 flex gap-4">
+                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-lg bg-gray-800 flex-shrink-0 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=200&auto=format&fit=crop" alt="Nova Pro" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <a href="product-detail.html" class="font-semibold text-lg hover:text-nova-primary transition mb-1">Nova Pro Wireless</a>
+                                <p class="text-sm text-gray-400 mb-2">Kleur: Zwart</p>
+                                <button class="text-xs text-nova-error hover:text-red-400 flex items-center gap-1 transition w-fit">
+                                    <i class="ph ph-trash"></i> Verwijderen
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-span-1 md:col-span-2 flex justify-start md:justify-center mt-4 md:mt-0">
+                            <div class="flex items-center border border-gray-700 rounded-lg bg-nova-surface h-10 w-28">
+                                <button class="px-2 text-gray-400 hover:text-white transition h-full flex items-center justify-center">
+                                    <i class="ph ph-minus"></i>
+                                </button>
+                                <input type="number" value="1" min="1" class="w-full bg-transparent text-center text-sm font-medium focus:outline-none appearance-none" style="-moz-appearance: textfield;">
+                                <button class="px-2 text-gray-400 hover:text-white transition h-full flex items-center justify-center">
+                                    <i class="ph ph-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2 text-left md:text-right hidden md:block text-gray-400">
+                            €299.00
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2 flex justify-between md:justify-end items-center mt-2 md:mt-0 font-semibold text-lg md:text-base">
+                            <span class="md:hidden text-gray-400 text-sm">Totaal:</span>
+                            €299.00
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 md:p-6 border-b border-gray-800 items-center hover:bg-white/[0.02] transition">
+                        <div class="col-span-1 md:col-span-6 flex gap-4">
+                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-lg bg-gray-800 flex-shrink-0 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1600269452121-4f2416e55c28?q=80&w=200&auto=format&fit=crop" alt="Keyboard" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <a href="product-detail.html" class="font-semibold text-lg hover:text-nova-primary transition mb-1">Mechanical Keychron</a>
+                                <p class="text-sm text-gray-400 mb-2">Switch: Red Linear</p>
+                                <button class="text-xs text-nova-error hover:text-red-400 flex items-center gap-1 transition w-fit">
+                                    <i class="ph ph-trash"></i> Verwijderen
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-span-1 md:col-span-2 flex justify-start md:justify-center mt-4 md:mt-0">
+                            <div class="flex items-center border border-gray-700 rounded-lg bg-nova-surface h-10 w-28">
+                                <button class="px-2 text-gray-400 hover:text-white transition h-full flex items-center justify-center">
+                                    <i class="ph ph-minus"></i>
+                                </button>
+                                <input type="number" value="2" min="1" class="w-full bg-transparent text-center text-sm font-medium focus:outline-none appearance-none" style="-moz-appearance: textfield;">
+                                <button class="px-2 text-gray-400 hover:text-white transition h-full flex items-center justify-center">
+                                    <i class="ph ph-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2 text-left md:text-right hidden md:block text-gray-400">
+                            €129.00
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2 flex justify-between md:justify-end items-center mt-2 md:mt-0 font-semibold text-lg md:text-base">
+                            <span class="md:hidden text-gray-400 text-sm">Totaal:</span>
+                            €258.00
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <a href="products.html" class="text-nova-primary hover:text-nova-secondary flex items-center gap-2 transition w-fit">
+                        <i class="ph ph-arrow-left"></i> Verder winkelen
+                    </a>
+                </div>
+            </div>
+
+            <!-- Order Summary Sidebar -->
+            <div class="w-full lg:w-96 flex-shrink-0 animate-slide-left">
+                <div class="nova-card p-6 sticky top-24">
+                    <h2 class="text-xl font-semibold mb-6">Besteloverzicht</h2>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between text-gray-300">
+                            <span>Subtotaal (3 items)</span>
+                            <span>€557.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Verzending</span>
+                            <span class="text-nova-success">Gratis</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>BTW (21%)</span>
+                            <span>€116.97</span>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-gray-800 pt-4 mb-8">
+                        <div class="flex justify-between items-end">
+                            <span class="text-lg font-medium">Totaal</span>
+                            <div class="text-right">
+                                <span class="text-3xl font-bold gradient-text">€673.97</span>
+                                <p class="text-xs text-gray-500 mt-1">Inclusief BTW</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="checkout.html" class="nova-btn nova-btn-primary w-full h-12 text-base shadow-lg hover:shadow-xl transition-shadow flex justify-center items-center">
+                        Afrekenen <i class="ph ph-arrow-right ml-2"></i>
+                    </a>
+
+                    <!-- Security Info -->
+                    <div class="mt-6 pt-6 border-t border-gray-800">
+                        <div class="flex items-center gap-3 text-sm text-gray-400 mb-3">
+                            <i class="ph ph-shield-check text-xl text-nova-success"></i>
+                            <span>Veilige betaling (Stripe)</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-gray-400">
+                            <i class="ph ph-arrow-u-up-left text-xl"></i>
+                            <span>30 dagen bedenktijd</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-nova-surface mt-auto animate-fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="ph-fill ph-planet text-2xl text-nova-primary"></i>
+                        <span class="font-bold text-lg tracking-wider">NOVA</span>
+                    </div>
+                    <p class="text-gray-400 text-sm max-w-xs">De premium bestemming voor moderne tech en lifestyle producten. Ontworpen voor de toekomst.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Shop</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="products.html" class="hover:text-nova-primary transition">Alle Producten</a></li>
+                        <li><a href="new.html" class="hover:text-nova-primary transition">Nieuw</a></li>
+                        <li><a href="#" class="hover:text-nova-primary transition">Aanbiedingen</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Account</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="my-orders.html" class="hover:text-nova-primary transition">Mijn Bestellingen</a></li>
+                        <li><a href="#" class="hover:text-nova-primary transition">Instellingen</a></li>
+                        <li><a href="admin/dashboard.html" class="hover:text-nova-primary transition">Admin Panel</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+                <p>&copy; 2026 NOVA Webshop. Alle rechten voorbehouden.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-white transition"><i class="ph-fill ph-twitter-logo text-xl"></i></a>
+                    <a href="#" class="hover:text-white transition"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

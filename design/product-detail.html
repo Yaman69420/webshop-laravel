@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="nl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Pro Wireless | NOVA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nova: {
+                            bg: '#0B0F1A',
+                            surface: '#111827',
+                            card: '#1F2937',
+                            primary: '#818CF8',
+                            secondary: '#A78BFA',
+                            accent: '#C084FC',
+                            success: '#34D399',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-nova-bg text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="glass sticky top-0 z-40 border-b border-gray-800 animate-fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="products.html" class="flex-shrink-0 flex items-center gap-2">
+                    <i class="ph-fill ph-planet text-3xl text-nova-primary"></i>
+                    <span class="font-bold text-xl tracking-wider gradient-text">NOVA</span>
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="products.html" class="text-nova-primary font-medium">Shop</a>
+                    <a href="categories.html" class="text-gray-400 hover:text-white transition">Categorieën</a>
+                    <a href="new.html" class="text-gray-400 hover:text-white transition">Nieuw</a>
+                </div>
+
+                <!-- Icons -->
+                <div class="flex items-center space-x-6">
+                    <button class="text-gray-400 hover:text-white transition">
+                        <i class="ph ph-magnifying-glass text-xl"></i>
+                    </button>
+                    <a href="my-orders.html" class="text-gray-400 hover:text-white transition">
+                        <i class="ph ph-user text-xl"></i>
+                    </a>
+                    <a href="cart.html" class="text-gray-400 hover:text-white transition relative group">
+                        <i class="ph ph-shopping-cart text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-nova-primary text-white text-xs font-bold px-1.5 py-0.5 rounded-full group-hover:scale-110 transition-transform">3</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Breadcrumbs -->
+        <nav class="flex text-sm text-gray-500 mb-8 animate-fade-in" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="products.html" class="hover:text-white transition">Shop</a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <i class="ph ph-caret-right text-xs mx-1"></i>
+                        <a href="#" class="hover:text-white transition">Audio</a>
+                    </div>
+                </li>
+                <li aria-current="page">
+                    <div class="flex items-center">
+                        <i class="ph ph-caret-right text-xs mx-1"></i>
+                        <span class="text-gray-300">Nova Pro Wireless</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            
+            <!-- Product Images -->
+            <div class="space-y-4 animate-slide-right">
+                <div class="aspect-square nova-img-placeholder rounded-2xl overflow-hidden nova-card border-none relative">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000&auto=format&fit=crop" alt="Nova Pro Wireless Main" class="w-full h-full object-cover">
+                    <div class="absolute top-4 left-4">
+                        <span class="nova-badge nova-badge-primary backdrop-blur-md">Nieuw</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-4 gap-4">
+                    <button class="aspect-square rounded-lg overflow-hidden border-2 border-nova-primary relative">
+                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=200&auto=format&fit=crop" alt="Thumbnail 1" class="w-full h-full object-cover">
+                    </button>
+                    <button class="aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-gray-600 transition relative">
+                        <img src="https://images.unsplash.com/photo-1484704849700-f032a568e944?q=80&w=200&auto=format&fit=crop" alt="Thumbnail 2" class="w-full h-full object-cover opacity-60 hover:opacity-100">
+                    </button>
+                    <button class="aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-gray-600 transition relative">
+                        <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=200&auto=format&fit=crop" alt="Thumbnail 3" class="w-full h-full object-cover opacity-60 hover:opacity-100">
+                    </button>
+                    <div class="aspect-square rounded-lg skeleton"></div>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="flex flex-col animate-fade-in-up">
+                <h1 class="text-4xl font-bold tracking-tight text-white mb-2">Nova Pro Wireless</h1>
+                <p class="text-xl text-nova-primary font-medium mb-6">€299.00</p>
+                
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="flex items-center gap-2 text-nova-success text-sm font-medium">
+                        <i class="ph-fill ph-check-circle"></i>
+                        Op voorraad
+                    </div>
+                </div>
+
+                <p class="text-gray-400 mb-8 leading-relaxed">
+                    Ervaar geluid zoals het bedoeld is. De Nova Pro Wireless biedt high-fidelity audio, actieve ruisonderdrukking van wereldklasse en een batterijduur van 40 uur. Ontworpen voor de veeleisende luisteraar.
+                </p>
+
+                <!-- Colors -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-medium text-white mb-3">Kleur</h3>
+                    <div class="flex gap-3">
+                        <button class="w-10 h-10 rounded-full bg-gray-900 border-2 border-nova-primary focus:outline-none shadow-[0_0_10px_rgba(129,140,248,0.4)]" aria-label="Zwart"></button>
+                        <button class="w-10 h-10 rounded-full bg-gray-100 border-2 border-transparent hover:border-gray-500 focus:outline-none transition" aria-label="Wit"></button>
+                        <button class="w-10 h-10 rounded-full bg-indigo-900 border-2 border-transparent hover:border-gray-500 focus:outline-none transition" aria-label="Midnight Blue"></button>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-800 my-6"></div>
+
+                <!-- Action Area -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                    <!-- Quantity -->
+                    <div class="flex items-center border border-gray-700 rounded-lg bg-nova-surface h-12 w-32">
+                        <button class="px-3 text-gray-400 hover:text-white transition h-full flex items-center justify-center">
+                            <i class="ph ph-minus"></i>
+                        </button>
+                        <input type="number" value="1" min="1" class="w-full bg-transparent text-center text-white font-medium focus:outline-none appearance-none" style="-moz-appearance: textfield;">
+                        <button class="px-3 text-gray-400 hover:text-white transition h-full flex items-center justify-center">
+                            <i class="ph ph-plus"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Add to Cart -->
+                    <button class="nova-btn nova-btn-primary h-12 flex-grow text-base shadow-lg animate-pulse-glow" onclick="alert('Toegevoegd aan winkelmand')">
+                        <i class="ph ph-shopping-cart-simple text-xl"></i>
+                        In Winkelmand
+                    </button>
+                </div>
+
+                <!-- Features/Specs Tabs (Mockup) -->
+                <div class="mt-8">
+                    <div class="flex border-b border-gray-800 gap-8 mb-4">
+                        <button class="text-nova-primary border-b-2 border-nova-primary pb-2 font-medium">Kenmerken</button>
+                        <button class="text-gray-500 hover:text-gray-300 pb-2 transition">Specificaties</button>
+                        <button class="text-gray-500 hover:text-gray-300 pb-2 transition">Verzending</button>
+                    </div>
+                    <div class="text-sm text-gray-400 space-y-3">
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong class="text-gray-300">Active Noise Cancelling:</strong> Blokkeert tot 95% van het omgevingsgeluid.</li>
+                            <li><strong class="text-gray-300">Multipoint Bluetooth:</strong> Verbind met twee apparaten tegelijk.</li>
+                            <li><strong class="text-gray-300">Lange Batterijduur:</strong> Tot 40 uur luistertijd (30 uur met ANC aan).</li>
+                            <li><strong class="text-gray-300">Snelladen:</strong> 15 minuten laden = 5 uur luisteren.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Related Products Section (Loading State) -->
+        <div class="mt-24 border-t border-gray-800 pt-16">
+            <h2 class="text-2xl font-bold mb-8">Misschien vind je dit ook leuk</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                 <!-- Skeleton Cards -->
+                 <div class="nova-card flex flex-col overflow-hidden">
+                    <div class="aspect-[4/3] skeleton"></div>
+                    <div class="p-4 flex-grow flex flex-col gap-2">
+                        <div class="w-1/2 h-4 skeleton rounded mb-1"></div>
+                        <div class="w-1/3 h-5 skeleton rounded"></div>
+                    </div>
+                </div>
+                <div class="nova-card flex flex-col overflow-hidden">
+                    <div class="aspect-[4/3] skeleton"></div>
+                    <div class="p-4 flex-grow flex flex-col gap-2">
+                        <div class="w-2/3 h-4 skeleton rounded mb-1"></div>
+                        <div class="w-1/4 h-5 skeleton rounded"></div>
+                    </div>
+                </div>
+                <div class="nova-card flex flex-col overflow-hidden">
+                    <div class="aspect-[4/3] skeleton"></div>
+                    <div class="p-4 flex-grow flex flex-col gap-2">
+                        <div class="w-1/2 h-4 skeleton rounded mb-1"></div>
+                        <div class="w-1/3 h-5 skeleton rounded"></div>
+                    </div>
+                </div>
+                <div class="nova-card flex flex-col overflow-hidden hidden md:flex">
+                    <div class="aspect-[4/3] skeleton"></div>
+                    <div class="p-4 flex-grow flex flex-col gap-2">
+                        <div class="w-3/4 h-4 skeleton rounded mb-1"></div>
+                        <div class="w-1/4 h-5 skeleton rounded"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-nova-surface mt-auto animate-fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="ph-fill ph-planet text-2xl text-nova-primary"></i>
+                        <span class="font-bold text-lg tracking-wider">NOVA</span>
+                    </div>
+                    <p class="text-gray-400 text-sm max-w-xs">De premium bestemming voor moderne tech en lifestyle producten. Ontworpen voor de toekomst.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Shop</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="products.html" class="hover:text-nova-primary transition">Alle Producten</a></li>
+                        <li><a href="new.html" class="hover:text-nova-primary transition">Nieuw</a></li>
+                        <li><a href="#" class="hover:text-nova-primary transition">Aanbiedingen</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Account</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="my-orders.html" class="hover:text-nova-primary transition">Mijn Bestellingen</a></li>
+                        <li><a href="#" class="hover:text-nova-primary transition">Instellingen</a></li>
+                        <li><a href="admin/dashboard.html" class="hover:text-nova-primary transition">Admin Panel</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+                <p>&copy; 2026 NOVA Webshop. Alle rechten voorbehouden.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-white transition"><i class="ph-fill ph-twitter-logo text-xl"></i></a>
+                    <a href="#" class="hover:text-white transition"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

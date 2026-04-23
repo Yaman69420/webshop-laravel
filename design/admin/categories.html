@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="nl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorieën | NOVA Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../shared.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nova: {
+                            bg: '#0B0F1A',
+                            surface: '#111827',
+                            card: '#1F2937',
+                            primary: '#818CF8',
+                            secondary: '#A78BFA',
+                            accent: '#C084FC',
+                            success: '#34D399',
+                            warning: '#FBBF24',
+                            error: '#FB7185',
+                            info: '#38BDF8',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="bg-nova-bg text-gray-100 min-h-screen flex">
+
+    <!-- Admin Sidebar -->
+    <aside class="w-64 bg-nova-surface border-r border-gray-800 flex-shrink-0 flex flex-col hidden md:flex sticky top-0 h-screen">
+        <div class="h-16 flex items-center px-6 border-b border-gray-800">
+            <a href="../products.html" class="flex items-center gap-2">
+                <i class="ph-fill ph-planet text-2xl text-nova-primary"></i>
+                <span class="font-bold text-lg tracking-wider gradient-text">NOVA ADMIN</span>
+            </a>
+        </div>
+        
+        <div class="flex-grow overflow-y-auto py-6 px-4">
+            <nav class="space-y-1">
+                <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition">
+                    <i class="ph ph-squares-four text-lg"></i> Dashboard
+                </a>
+                <div class="pt-4 pb-1">
+                    <p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Catalogus</p>
+                </div>
+                <a href="products.html" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition">
+                    <i class="ph ph-package text-lg"></i> Producten
+                </a>
+                <a href="categories.html" class="flex items-center gap-3 px-3 py-2 text-sm text-nova-primary bg-nova-primary/10 rounded-lg font-medium transition">
+                    <i class="ph-fill ph-tag text-lg"></i> Categorieën
+                </a>
+                <div class="pt-4 pb-1">
+                    <p class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Verkoop</p>
+                </div>
+                <a href="orders.html" class="flex items-center justify-between px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition group">
+                    <div class="flex items-center gap-3">
+                        <i class="ph ph-shopping-cart text-lg"></i> Bestellingen
+                    </div>
+                    <span class="bg-gray-800 text-gray-400 text-xs font-bold px-2 py-0.5 rounded-full group-hover:bg-nova-primary group-hover:text-white transition">5</span>
+                </a>
+                <a href="customers.html" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-400 hover:bg-white/[0.05] hover:text-white rounded-lg transition">
+                    <i class="ph ph-users text-lg"></i> Klanten
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow flex flex-col min-w-0">
+        
+        <header class="h-16 glass sticky top-0 z-30 border-b border-gray-800 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <button class="md:hidden text-gray-400 hover:text-white">
+                <i class="ph ph-list text-2xl"></i>
+            </button>
+            <div class="flex items-center gap-4 ml-auto">
+                <a href="../products.html" class="text-sm text-nova-primary hover:text-nova-secondary transition flex items-center gap-1">
+                    Storefront <i class="ph ph-arrow-square-out"></i>
+                </a>
+            </div>
+        </header>
+
+        <main class="flex-grow p-4 sm:p-6 lg:p-8 animate-fade-in-up">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold">Categorieën</h1>
+                    <p class="text-gray-400 text-sm mt-1">Beheer de productcategorieën.</p>
+                </div>
+                <button class="nova-btn nova-btn-primary shadow-lg" onclick="document.getElementById('createCategoryModal').classList.remove('hidden')">
+                    <i class="ph ph-plus"></i> Nieuwe Categorie
+                </button>
+            </div>
+
+            <div class="nova-card overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="nova-table">
+                        <thead>
+                            <tr>
+                                <th>Naam</th>
+                                <th>Slug</th>
+                                <th>Aantal Producten</th>
+                                <th class="text-right">Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Row 1 -->
+                            <tr>
+                                <td class="font-medium text-white">Audio</td>
+                                <td class="font-mono text-xs text-gray-400">audio</td>
+                                <td>12</td>
+                                <td class="text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button class="p-1.5 text-gray-400 hover:text-nova-primary transition">
+                                            <i class="ph ph-pencil-simple text-lg"></i>
+                                        </button>
+                                        <button class="p-1.5 text-gray-400 hover:text-nova-error transition">
+                                            <i class="ph ph-trash text-lg"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Row 2 -->
+                            <tr>
+                                <td class="font-medium text-white">Workspace</td>
+                                <td class="font-mono text-xs text-gray-400">workspace</td>
+                                <td>8</td>
+                                <td class="text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button class="p-1.5 text-gray-400 hover:text-nova-primary transition">
+                                            <i class="ph ph-pencil-simple text-lg"></i>
+                                        </button>
+                                        <button class="p-1.5 text-gray-400 hover:text-nova-error transition">
+                                            <i class="ph ph-trash text-lg"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Row 3 -->
+                            <tr>
+                                <td class="font-medium text-white">Accessoires</td>
+                                <td class="font-mono text-xs text-gray-400">accessoires</td>
+                                <td>4</td>
+                                <td class="text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button class="p-1.5 text-gray-400 hover:text-nova-primary transition">
+                                            <i class="ph ph-pencil-simple text-lg"></i>
+                                        </button>
+                                        <button class="p-1.5 text-gray-400 hover:text-nova-error transition">
+                                            <i class="ph ph-trash text-lg"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Create/Edit Category Modal -->
+    <div id="createCategoryModal" class="nova-overlay hidden">
+        <div class="nova-modal max-w-md">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Nieuwe Categorie</h2>
+                <button class="text-gray-400 hover:text-white" onclick="document.getElementById('createCategoryModal').classList.add('hidden')">
+                    <i class="ph ph-x text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Naam</label>
+                    <input type="text" class="nova-input" placeholder="Bijv. Audio">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Slug</label>
+                    <input type="text" class="nova-input text-gray-500" placeholder="audio" readonly>
+                    <p class="text-xs text-gray-500 mt-1">Wordt automatisch gegenereerd.</p>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-800 bg-nova-surface rounded-b-2xl flex justify-end gap-3">
+                <button class="nova-btn nova-btn-ghost" onclick="document.getElementById('createCategoryModal').classList.add('hidden')">Annuleren</button>
+                <button class="nova-btn nova-btn-primary" onclick="document.getElementById('createCategoryModal').classList.add('hidden');">Opslaan</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
