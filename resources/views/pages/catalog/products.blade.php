@@ -2,6 +2,7 @@
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Actions\Cart\AddToCartAction;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
@@ -43,6 +44,12 @@ class extends Component
     public function categories()
     {
         return Category::orderBy('name')->get();
+    }
+
+    public function addToCart(int $productId): void
+    {
+        app(AddToCartAction::class)->execute($productId, 1);
+        $this->dispatch('cart-updated');
     }
 
     public function updatedSearch(): void
