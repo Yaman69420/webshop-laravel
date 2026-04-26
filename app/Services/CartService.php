@@ -86,7 +86,7 @@ class CartService
             return collect();
         }
 
-        $products = Product::whereIn('id', $items->pluck('product_id'))->get()->keyBy('id');
+        $products = Product::whereIn('id', $items->pluck('product_id'))->with('category')->get()->keyBy('id');
 
         return $items->map(function (array $item) use ($products) {
             $product = $products->get($item['product_id']);

@@ -58,7 +58,7 @@ class extends Component
 
                 {{-- Nav --}}
                 <nav class="space-y-1">
-                    <a href="{{ route('settings.profile') }}" class="flex items-center gap-3 px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-white rounded-lg transition" wire:navigate>
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-2 text-sm text-zinc-400 hover:bg-white/5 hover:text-white rounded-lg transition" wire:navigate>
                         <flux:icon name="user" class="size-5" />
                         Profiel
                     </a>
