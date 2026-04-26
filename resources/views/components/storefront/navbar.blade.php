@@ -2,8 +2,9 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
             {{-- Logo --}}
-            <a href="{{ route('home') }}" class="text-xl font-bold tracking-wider text-white" wire:navigate>
-                NOVA
+            <a href="{{ route('home') }}" class="flex items-center gap-2" wire:navigate>
+                <flux:icon name="globe-alt" class="size-7 text-purple-400" />
+                <span class="text-xl font-bold tracking-wider bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent">NOVA</span>
             </a>
 
             {{-- Navigation Links --}}
