@@ -1,6 +1,6 @@
 # NOVA Webshop
 
-Een volwaardige webshop gebouwd in Laravel 13 met Livewire 4, Flux UI en Stripe betalingen.
+Een volwaardige webshop gebouwd in Laravel 13 met Livewire 4, Flux UI en Stripe betalingen. Bezoekers kunnen producten bekijken, een winkelmandje beheren en betalen via Stripe. Admins beheren producten, categorieën en bestellingen via een afgeschermd paneel.
 
 ---
 
@@ -8,8 +8,8 @@ Een volwaardige webshop gebouwd in Laravel 13 met Livewire 4, Flux UI en Stripe 
 
 | Naam | Rol |
 |---|---|
-| Yaman Terkawi | Frontend — Livewire componenten, views, admin CRUD, feature tests, README |
-| Jan De Smet | Backend — migraties, models, Actions, Services, Stripe, Policies, middleware, unit tests |
+| Yaman Terkawi | Frontend — Livewire componenten, Flux UI views, admin CRUD, social login, feature tests, README |
+| Jan De Smet | Backend — migraties, models, Actions, Services, Stripe, Policies, middleware, unit tests, seeders |
 
 ---
 
@@ -18,11 +18,12 @@ Een volwaardige webshop gebouwd in Laravel 13 met Livewire 4, Flux UI en Stripe 
 | Pakket | Versie |
 |---|---|
 | PHP | 8.4 |
-| Laravel | 13.6 |
-| Livewire | 4.1 |
-| Flux UI | 2.13 (free tier) |
+| Laravel | 13 |
+| Livewire / Volt | 4 / 1 |
+| Flux UI | 2 (free tier) |
 | Tailwind CSS | 4 |
-| Stripe PHP SDK | 20 |
+| Laravel Socialite | 5 |
+| Stripe PHP SDK | latest |
 | Pest | 4 |
 | MySQL | 8 |
 
@@ -51,7 +52,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Open `.env` en pas aan:
+Open `.env` en pas de database aan:
 
 ```env
 DB_CONNECTION=mysql
@@ -64,8 +65,6 @@ DB_PASSWORD=jouw_wachtwoord
 
 ### 4. Database aanmaken
 
-Maak een database aan met de naam `webshop_laravel` via phpMyAdmin of MySQL CLI:
-
 ```sql
 CREATE DATABASE webshop_laravel CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
@@ -73,12 +72,12 @@ CREATE DATABASE webshop_laravel CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ### 5. Migraties en testdata
 
 ```bash
-php artisan migrate --seed
+php artisan migrate:fresh --seed
 ```
 
 Dit maakt alle tabellen aan en vult de database met:
 - 5 categorieën
-- 20 producten
+- 20 producten met afbeeldingen
 - 1 admin gebruiker
 - 2 testklanten
 
@@ -94,28 +93,30 @@ php artisan storage:link
 npm run build
 ```
 
-Of voor development met hot reload:
+### 8. Applicatie starten
 
 ```bash
-npm run dev
+php artisan serve
 ```
 
-### 8. Site bekijken
+De applicatie is bereikbaar op `http://localhost:8000`.
 
-De applicatie is bereikbaar via **Laravel Herd** op `http://webshop-laravel.test`.
-
-Zonder Herd: `php artisan serve` → `http://localhost:8000`
+> Via Laravel Herd is de applicatie ook bereikbaar op `http://webshop-laravel.test`.
 
 ---
 
-## Admin credentials
+## Inloggegevens
+
+### Admin
 
 ```
 E-mail:     admin@nova.test
 Wachtwoord: password
 ```
 
-## Testklanten
+Admin paneel: `http://localhost:8000/admin`
+
+### Testklanten
 
 ```
 E-mail:     jan@example.com
@@ -127,16 +128,24 @@ Wachtwoord: password
 
 ---
 
-## Stripe testen
+## Stripe configureren
 
-Voeg je Stripe test keys toe in `.env`:
+Maak een gratis account aan op [dashboard.stripe.com](https://dashboard.stripe.com) en haal je test API keys op via **Developers → API keys**.
+
+Voeg toe aan `.env`:
 
 ```env
 STRIPE_KEY=pk_test_...
 STRIPE_SECRET=sk_test_...
 ```
 
-Testkaarten:
+Daarna:
+
+```bash
+php artisan config:clear
+```
+
+### Testkaarten
 
 | Scenario | Kaartnummer |
 |---|---|
@@ -145,46 +154,82 @@ Testkaarten:
 
 Vervaldatum: elke datum in de toekomst. CVC: 3 willekeurige cijfers.
 
+> **Belangrijk:** de applicatie verifieert de betaling via de Stripe API op de success pagina. Een order wordt pas op `paid` gezet na bevestiging van Stripe — nooit blind op basis van de redirect URL.
+
 ---
 
-## Social login
+## Social login configureren
 
-Social login is geïmplementeerd via **Laravel Socialite** met Google en GitHub.
+Social login is geïmplementeerd via **Laravel Socialite** (Optie B) met Google en GitHub.
 
-Voeg toe aan `.env`:
+> **Let op:** gebruik `php artisan serve` voor social login. Het `.test` domein van Herd wordt niet geaccepteerd als redirect URI door Google en GitHub.
+
+### GitHub
+
+1. Ga naar [github.com/settings/developers](https://github.com/settings/developers) → **New OAuth App**
+2. Vul in:
+   - Homepage URL: `http://localhost:8000`
+   - Callback URL: `http://localhost:8000/auth/github/callback`
+3. Kopieer Client ID en Client Secret
+
+### Google
+
+1. Ga naar [console.cloud.google.com](https://console.cloud.google.com) → nieuw project
+2. Ga naar **APIs & Services → Credentials → Create OAuth client ID**
+3. Application type: Web application
+4. Authorized redirect URI: `http://localhost:8000/auth/google/callback`
+5. Kopieer Client ID en Client Secret
+
+### `.env` aanvullen
 
 ```env
 GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...
-GOOGLE_REDIRECT_URI=http://webshop-laravel.test/auth/google/callback
 
 GITHUB_CLIENT_ID=...
 GITHUB_CLIENT_SECRET=...
-GITHUB_REDIRECT_URI=http://webshop-laravel.test/auth/github/callback
 ```
+
+### Accountkoppeling
+
+Als een gebruiker zich eerst registreert met e-mail/wachtwoord en daarna inlogt met een social provider op hetzelfde e-mailadres, wordt de bestaande account hergebruikt via `firstOrCreate()` op het e-mailadres. De `social_provider` en `social_id` worden dan bijgewerkt. De gebruiker verliest geen data en hoeft geen nieuw account aan te maken.
+
+---
+
+## Tests uitvoeren
+
+```bash
+php artisan test
+```
+
+Alle tests zijn groen op een verse installatie met `migrate:fresh --seed`.
 
 ---
 
 ## Architectuurkeuzes
 
 **Actions boven dikke controllers**
-Alle business logic zit in `app/Actions/{Domain}/` met één `handle()` of `execute()` methode. Controllers en Livewire componenten zijn dun en delegeren naar Actions.
+Alle business logic zit in `app/Actions/{Domain}/` met één `execute()` methode. Livewire componenten zijn dun en delegeren altijd naar een Action of Service.
 
-**CartService via sessie en database**
-De winkelwagen wordt opgeslagen in de sessie voor gasten en gekoppeld aan de gebruiker na inloggen.
+**CartService**
+De winkelwagen wordt beheerd via `app/Services/CartService.php` en opgeslagen in de sessie. Dit houdt de Livewire componenten vrij van cart-logica.
 
-**Stripe redirect flow**
-We gebruiken de Stripe hosted checkout met redirect. Na betaling verifiëren we de sessie via de Stripe API — nooit blind vertrouwen op een redirect parameter.
+**Stripe hosted checkout met verificatie**
+We gebruiken de Stripe hosted checkout redirect flow. Na betaling verifieert de success pagina de sessie via `StripeService::retrieveSession()` voordat de order op `paid` wordt gezet. Dit voorkomt manipulatie van de redirect URL.
 
-**Snapshots in order_details**
-Bij het plaatsen van een bestelling kopiëren we de productnaam en prijs op dat moment. Zo blijft de orderhistorie correct, ook als het product later wordt aangepast.
+**Snapshots in order_items**
+Bij het aanmaken van een bestelling kopiëren we `product_name` en `product_price_in_cents` op dat moment. Zo blijft de orderhistorie correct, ook als het product later wordt aangepast of verwijderd.
 
-**SoftDeletes op producten, categorieën en orders**
-Verwijderen is altijd soft — data gaat nooit verloren.
+**SoftDeletes op Product, Category en Order**
+Verwijderen is altijd soft — data gaat nooit permanent verloren en kan worden hersteld.
+
+**Enums voor statussen**
+`OrderStatus` en `UserRole` zijn PHP backed enums in `app/Enums/`. Ze bevatten `label()` en `color()` methodes voor consistente weergave in de UI.
 
 ---
 
 ## Bekende beperkingen
 
-- Productafbeeldingen zijn niet inbegrepen in de seeders. Upload via het admin paneel.
-- Social login vereist eigen OAuth credentials (zie sectie hierboven).
+- Social login vereist eigen OAuth credentials (zie sectie hierboven) — gedeelde test credentials worden niet meegeleverd in de repo.
+- Stripe webhooks zijn niet geïmplementeerd (niet vereist). De betaалverificatie gebeurt via de redirect flow.
+- QR-code login is niet geïmplementeerd.
