@@ -2,6 +2,7 @@
 
 use App\Actions\Checkout\CreateOrderAction;
 use App\Services\CartService;
+use App\Services\StripeService;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -27,8 +28,7 @@ class extends Component
 
     public function mount(): void
     {
-        $user = auth()->user();
-        $this->shipping_name = $user->name;
+        $this->shipping_name = auth()->user()->name;
     }
 
     #[Computed]
@@ -53,17 +53,37 @@ class extends Component
     {
         $this->validate();
 
-        $order = app(CreateOrderAction::class)->execute(
+        // Build Stripe line items from cart
+        $lineItems = $this->cartItems->map(fn (array $item) => [
+            'name' => $item['product']->name,
+            'price_in_cents' => $item['product']->price_in_cents,
+            'quantity' => $item['quantity'],
+        ])->all();
+
+        // Create Stripe Checkout Session
+        $successUrl = route('checkout.success').'?session_id={CHECKOUT_SESSION_ID}';
+        $cancelUrl = route('checkout.index');
+
+        $stripeSession = app(StripeService::class)->createCheckoutSession(
+            $lineItems,
+            $successUrl,
+            $cancelUrl
+        );
+
+        // Create order in database with pending status + stripe session id
+        app(CreateOrderAction::class)->execute(
             auth()->user(),
             [
                 'shipping_name' => $this->shipping_name,
                 'shipping_address' => $this->shipping_address,
                 'shipping_city' => $this->shipping_city,
                 'shipping_postal_code' => $this->shipping_postal_code,
-            ]
+            ],
+            $stripeSession->id
         );
 
-        $this->redirect(route('checkout.success', ['order' => $order->id]), navigate: true);
+        // Redirect to Stripe hosted checkout (navigate: false = external URL)
+        $this->redirect($stripeSession->url, navigate: false);
     }
 }
 
@@ -184,7 +204,7 @@ class extends Component
 
                         <flux:button type="submit" variant="primary" class="w-full bg-purple-600 hover:bg-purple-500 flex items-center justify-center gap-2">
                             <flux:icon name="lock-closed" class="size-4" />
-                            Betalen & Bestellen
+                            Betalen via Stripe
                         </flux:button>
 
                         <p class="text-xs text-center text-zinc-500 mt-4">
