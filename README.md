@@ -9,7 +9,7 @@ Een volwaardige webshop gebouwd in Laravel 13 met Livewire 4, Flux UI en Stripe 
 | Naam | Rol |
 |---|---|
 | Yaman Terkawi | Frontend — Livewire componenten, Flux UI views, admin CRUD, social login, feature tests, README |
-| Jan De Smet | Backend — migraties, models, Actions, Services, Stripe, Policies, middleware, unit tests, seeders |
+| Jan | Backend — migraties, models, Actions, Services, Stripe, Policies, middleware, unit tests, seeders |
 
 ---
 
@@ -231,5 +231,5 @@ Verwijderen is altijd soft — data gaat nooit permanent verloren en kan worden 
 ## Bekende beperkingen
 
 - Social login vereist eigen OAuth credentials (zie sectie hierboven) — gedeelde test credentials worden niet meegeleverd in de repo.
-- Stripe webhooks zijn niet geïmplementeerd (niet vereist). De betaалverificatie gebeurt via de redirect flow.
+- Stripe webhooks zijn niet geïmplementeerd (niet vereist). De betaalverificatie gebeurt via de redirect flow.
 - QR-code login is niet geïmplementeerd.
