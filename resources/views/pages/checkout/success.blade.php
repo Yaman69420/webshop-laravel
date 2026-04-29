@@ -18,8 +18,10 @@ class extends Component
 
     public string $errorMessage = '';
 
-    public function mount(string $session_id = ''): void
+    public function mount(): void
     {
+        $session_id = request()->query('session_id', '');
+
         if (! $session_id) {
             return;
         }
