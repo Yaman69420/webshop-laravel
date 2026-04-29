@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Product;
-use App\Models\Category;
 use App\Actions\Cart\AddToCartAction;
+use App\Models\Category;
+use App\Models\Product;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
-use Livewire\Attributes\Computed;
-use Livewire\WithPagination;
 use Livewire\Volt\Component;
+use Livewire\WithPagination;
 
 new
 #[Layout('layouts.storefront')]
@@ -27,6 +27,9 @@ class extends Component
     public string $sort = 'newest';
 
     #[Url]
+    public int $min_price = 0;
+
+    #[Url]
     public int $max_price = 1000;
 
     #[Computed]
@@ -37,6 +40,7 @@ class extends Component
             ->with('category')
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
             ->when($this->category, fn ($q) => $q->whereHas('category', fn ($c) => $c->where('slug', $this->category)))
+            ->where('price_in_cents', '>=', $this->min_price * 100)
             ->where('price_in_cents', '<=', $this->max_price * 100)
             ->when($this->sort === 'price_asc', fn ($q) => $q->orderBy('price_in_cents', 'asc'))
             ->when($this->sort === 'price_desc', fn ($q) => $q->orderBy('price_in_cents', 'desc'))
@@ -66,11 +70,17 @@ class extends Component
     {
         $this->category = '';
         $this->search = '';
+        $this->min_price = 0;
         $this->max_price = 1000;
         $this->resetPage();
     }
 
     public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedMinPrice(): void
     {
         $this->resetPage();
     }
@@ -121,16 +131,34 @@ class extends Component
                 {{-- Price Range --}}
                 <div>
                     <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-3">Prijs</h3>
-                    <input
-                        type="range"
-                        wire:model.live="max_price"
-                        min="0"
-                        max="1000"
-                        class="w-full accent-purple-500"
-                    >
-                    <div class="flex justify-between text-xs text-zinc-400 mt-2">
-                        <span>€0</span>
-                        <span>€{{ $max_price }}</span>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1">
+                            <label class="text-xs text-zinc-500 mb-1 block">Van</label>
+                            <div class="relative">
+                                <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">€</span>
+                                <input
+                                    type="number"
+                                    wire:model.live.debounce.500ms="min_price"
+                                    min="0"
+                                    max="1000"
+                                    class="w-full rounded-lg border border-zinc-700 bg-zinc-800 pl-6 pr-2 py-2 text-sm text-white focus:border-purple-500 focus:outline-none"
+                                >
+                            </div>
+                        </div>
+                        <span class="text-zinc-600 mt-4">—</span>
+                        <div class="flex-1">
+                            <label class="text-xs text-zinc-500 mb-1 block">Tot</label>
+                            <div class="relative">
+                                <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">€</span>
+                                <input
+                                    type="number"
+                                    wire:model.live.debounce.500ms="max_price"
+                                    min="0"
+                                    max="1000"
+                                    class="w-full rounded-lg border border-zinc-700 bg-zinc-800 pl-6 pr-2 py-2 text-sm text-white focus:border-purple-500 focus:outline-none"
+                                >
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -98,42 +98,43 @@ class extends Component
 
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach($this->products as $product)
-                <a href="{{ route('products.show', $product->slug) }}" wire:navigate
-                   class="group rounded-2xl border border-zinc-800 bg-zinc-900/50 flex flex-col overflow-hidden hover:border-purple-500/40 transition">
+                <div class="group rounded-2xl border border-zinc-800 bg-zinc-900/50 flex flex-col overflow-hidden hover:border-purple-500/40 transition">
                     {{-- Image --}}
-                    <div class="aspect-[4/3] bg-zinc-800 relative overflow-hidden">
-                        @if($product->image_path)
-                            <img src="{{ asset('storage/' . $product->image_path) }}"
-                                 alt="{{ $product->name }}"
-                                 class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
-                        @else
-                            <div class="flex h-full w-full items-center justify-center text-zinc-700">
-                                <flux:icon name="photo" class="size-12" />
+                    <a href="{{ route('products.show', $product->slug) }}" wire:navigate class="block">
+                        <div class="aspect-[4/3] bg-zinc-800 relative overflow-hidden">
+                            @if($product->image_path)
+                                <img src="{{ asset('storage/' . $product->image_path) }}"
+                                     alt="{{ $product->name }}"
+                                     class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+                            @else
+                                <div class="flex h-full w-full items-center justify-center text-zinc-700">
+                                    <flux:icon name="photo" class="size-12" />
+                                </div>
+                            @endif
+                            <div class="absolute top-3 right-3">
+                                <span class="inline-flex rounded-full bg-purple-600 px-2.5 py-0.5 text-xs font-semibold text-white shadow-lg">
+                                    Nieuw
+                                </span>
                             </div>
-                        @endif
-                        <div class="absolute top-3 right-3">
-                            <span class="inline-flex rounded-full bg-purple-500/20 border border-purple-500/30 px-2.5 py-0.5 text-xs font-medium text-purple-300">
-                                Nieuw
-                            </span>
                         </div>
-                    </div>
+                    </a>
                     {{-- Info --}}
                     <div class="p-5 flex-grow flex flex-col justify-between gap-4">
-                        <div>
+                        <a href="{{ route('products.show', $product->slug) }}" wire:navigate class="block">
                             <p class="text-xs text-purple-400 font-medium mb-1">{{ $product->category->name }}</p>
                             <h3 class="text-base font-semibold text-white group-hover:text-purple-400 transition">{{ $product->name }}</h3>
                             <p class="text-sm text-zinc-400 mt-1 line-clamp-2">{{ $product->description }}</p>
-                        </div>
+                        </a>
                         <div class="flex items-center justify-between">
                             <span class="text-lg font-bold text-white">{{ $product->formattedPrice() }}</span>
-                            <button wire:click.prevent="addToCart({{ $product->id }})"
+                            <button wire:click="addToCart({{ $product->id }})"
                                     class="rounded-lg border border-zinc-700 p-2 text-zinc-400 hover:border-purple-500 hover:text-purple-400 transition"
                                     aria-label="Toevoegen aan winkelwagen">
                                 <flux:icon name="shopping-cart" class="size-5" />
                             </button>
                         </div>
                     </div>
-                </a>
+                </div>
             @endforeach
         </div>
     @endif

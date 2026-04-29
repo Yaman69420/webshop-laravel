@@ -1,9 +1,11 @@
 <?php
 
+use App\Actions\Cart\RemoveFromCartAction;
+use App\Actions\Cart\UpdateCartItemAction;
 use App\Services\CartService;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\Computed;
 use Livewire\Volt\Component;
 
 new
@@ -31,33 +33,117 @@ class extends Component
 
     public function updateQuantity(int $productId, int $quantity): void
     {
-        app(\App\Actions\Cart\UpdateCartItemAction::class)->execute($productId, $quantity);
+        app(UpdateCartItemAction::class)->execute($productId, $quantity);
         unset($this->cartItems, $this->totalInCents, $this->vatInCents);
         $this->dispatch('cart-updated');
     }
 
+    public string $removedProduct = '';
+
     public function removeItem(int $productId): void
     {
-        app(\App\Actions\Cart\RemoveFromCartAction::class)->execute($productId);
+        $product = $this->cartItems->firstWhere('product.id', $productId);
+
+        app(RemoveFromCartAction::class)->execute($productId);
         unset($this->cartItems, $this->totalInCents, $this->vatInCents);
+
+        if ($product) {
+            $this->removedProduct = $product['product']->name;
+        }
+
         $this->dispatch('cart-updated');
     }
 
     public function formattedTotal(): string
     {
-        return '€' . number_format($this->totalInCents / 100, 2, ',', '.');
+        return '€'.number_format($this->totalInCents / 100, 2, ',', '.');
     }
 
     public function formattedVat(): string
     {
-        return '€' . number_format($this->vatInCents / 100, 2, ',', '.');
+        return '€'.number_format($this->vatInCents / 100, 2, ',', '.');
     }
 }
 
 ?>
 
-<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+<div
+    x-data="{ confirmId: null, confirmName: '' }"
+    class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+>
     <h1 class="text-3xl font-bold text-white mb-8">Winkelmand</h1>
+
+    {{-- Confirmation modal --}}
+    <div
+        x-show="confirmId !== null"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+        @click.self="confirmId = null"
+    >
+        <div
+            x-show="confirmId !== null"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95"
+            class="w-full max-w-sm rounded-2xl border border-zinc-700 bg-zinc-900 p-6 shadow-2xl mx-4"
+        >
+            <div class="flex items-center gap-3 mb-4">
+                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-red-500/10">
+                    <flux:icon name="trash" class="size-5 text-red-400" />
+                </div>
+                <h3 class="text-lg font-semibold text-white">Product verwijderen?</h3>
+            </div>
+            <p class="text-sm text-zinc-400 mb-6">
+                Weet je zeker dat je <span class="font-medium text-white" x-text="confirmName"></span> wilt verwijderen uit je winkelmandje?
+            </p>
+            <div class="flex gap-3">
+                <button
+                    @click="confirmId = null"
+                    class="flex-1 rounded-lg border border-zinc-700 px-4 py-2.5 text-sm font-medium text-zinc-300 hover:border-zinc-500 hover:text-white transition"
+                >
+                    Annuleren
+                </button>
+                <button
+                    @click="$wire.removeItem(confirmId); confirmId = null"
+                    class="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-500 transition"
+                >
+                    Ja, verwijderen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Removed toast --}}
+    @if($removedProduct)
+        <div
+            x-data="{ show: true }"
+            x-show="show"
+            x-init="setTimeout(() => show = false, 3000)"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-2"
+            class="fixed top-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 shadow-xl"
+        >
+            <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-green-500/10">
+                <flux:icon name="check-circle" class="size-4 text-green-400" />
+            </div>
+            <p class="text-sm text-white">
+                <span class="font-medium">{{ $removedProduct }}</span>
+                <span class="text-zinc-400"> verwijderd uit je winkelmandje.</span>
+            </p>
+            <button @click="show = false" class="ml-2 text-zinc-500 hover:text-white transition">
+                <flux:icon name="x-mark" class="size-4" />
+            </button>
+        </div>
+    @endif
 
     @if($this->cartItems->isEmpty())
         <div class="flex flex-col items-center justify-center py-16 text-center">
@@ -103,7 +189,7 @@ class extends Component
                                         {{ $item['product']->name }}
                                     </a>
                                     <p class="text-sm text-zinc-500 mt-1">{{ $item['product']->category->name ?? '' }}</p>
-                                    <button wire:click="removeItem({{ $item['product']->id }})" class="mt-2 flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition w-fit">
+                                    <button @click="confirmId = {{ $item['product']->id }}; confirmName = '{{ addslashes($item['product']->name) }}'" class="mt-2 flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition w-fit">
                                         <flux:icon name="trash" class="size-3" />
                                         Verwijderen
                                     </button>
@@ -113,7 +199,7 @@ class extends Component
                             {{-- Quantity --}}
                             <div class="col-span-1 md:col-span-2 flex justify-start md:justify-center">
                                 <div class="flex items-center border border-zinc-700 rounded-lg bg-zinc-900 h-10 w-28">
-                                    <button wire:click="updateQuantity({{ $item['product']->id }}, {{ $item['quantity'] - 1 }})" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center">
+                                    <button @click="{{ $item['quantity'] }} === 1 ? (confirmId = {{ $item['product']->id }}, confirmName = '{{ addslashes($item['product']->name) }}') : $wire.updateQuantity({{ $item['product']->id }}, {{ $item['quantity'] - 1 }})" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center">
                                         <flux:icon name="minus" class="size-3" />
                                     </button>
                                     <span class="w-full text-center text-sm font-medium text-white">{{ $item['quantity'] }}</span>
