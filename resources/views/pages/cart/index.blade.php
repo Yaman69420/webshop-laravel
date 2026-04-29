@@ -199,7 +199,7 @@ class extends Component
                             {{-- Quantity --}}
                             <div class="col-span-1 md:col-span-2 flex justify-start md:justify-center">
                                 <div class="flex items-center border border-zinc-700 rounded-lg bg-zinc-900 h-10 w-28">
-                                    <button wire:click="updateQuantity({{ $item['product']->id }}, {{ $item['quantity'] - 1 }})" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center">
+                                    <button @click="{{ $item['quantity'] }} === 1 ? (confirmId = {{ $item['product']->id }}, confirmName = '{{ addslashes($item['product']->name) }}') : $wire.updateQuantity({{ $item['product']->id }}, {{ $item['quantity'] - 1 }})" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center">
                                         <flux:icon name="minus" class="size-3" />
                                     </button>
                                     <span class="w-full text-center text-sm font-medium text-white">{{ $item['quantity'] }}</span>
