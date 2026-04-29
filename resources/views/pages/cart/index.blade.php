@@ -4,7 +4,6 @@ use App\Services\CartService;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\On;
 use Livewire\Volt\Component;
 
 new
@@ -24,28 +23,41 @@ class extends Component
         return app(CartService::class)->totalInCents();
     }
 
+    #[Computed]
+    public function vatInCents(): int
+    {
+        return (int) round($this->totalInCents * 0.21 / 1.21);
+    }
+
     public function updateQuantity(int $productId, int $quantity): void
     {
         app(\App\Actions\Cart\UpdateCartItemAction::class)->execute($productId, $quantity);
-        unset($this->cartItems, $this->totalInCents);
+        unset($this->cartItems, $this->totalInCents, $this->vatInCents);
+        $this->dispatch('cart-updated');
     }
 
     public function removeItem(int $productId): void
     {
         app(\App\Actions\Cart\RemoveFromCartAction::class)->execute($productId);
-        unset($this->cartItems, $this->totalInCents);
+        unset($this->cartItems, $this->totalInCents, $this->vatInCents);
+        $this->dispatch('cart-updated');
     }
 
     public function formattedTotal(): string
     {
         return '€' . number_format($this->totalInCents / 100, 2, ',', '.');
     }
+
+    public function formattedVat(): string
+    {
+        return '€' . number_format($this->vatInCents / 100, 2, ',', '.');
+    }
 }
 
 ?>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-bold text-white mb-8">Winkelmandje</h1>
+    <h1 class="text-3xl font-bold text-white mb-8">Winkelmand</h1>
 
     @if($this->cartItems->isEmpty())
         <div class="flex flex-col items-center justify-center py-16 text-center">
@@ -57,78 +69,131 @@ class extends Component
             </a>
         </div>
     @else
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div class="flex flex-col lg:flex-row gap-8">
+
             {{-- Cart Items --}}
-            <div class="lg:col-span-2 space-y-4">
-                @foreach($this->cartItems as $item)
-                    <div class="flex items-center gap-4 rounded-xl border border-zinc-800 bg-zinc-900/50 p-4" wire:key="cart-{{ $item['product']->id }}">
-                        {{-- Image --}}
-                        <div class="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-zinc-800">
-                            @if($item['product']->image_path)
-                                <img src="{{ asset('storage/' . $item['product']->image_path) }}" alt="{{ $item['product']->name }}" class="h-full w-full object-cover">
-                            @else
-                                <div class="flex h-full w-full items-center justify-center text-zinc-600">
-                                    <flux:icon name="photo" class="size-8" />
-                                </div>
-                            @endif
-                        </div>
+            <div class="flex-grow">
+                <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
 
-                        {{-- Details --}}
-                        <div class="flex-grow">
-                            <h3 class="font-medium text-white">{{ $item['product']->name }}</h3>
-                            <p class="text-sm text-purple-400">{{ $item['product']->formattedPrice() }}</p>
-                        </div>
-
-                        {{-- Quantity --}}
-                        <div class="flex items-center gap-2">
-                            <flux:button wire:click="updateQuantity({{ $item['product']->id }}, {{ $item['quantity'] - 1 }})" size="sm" variant="ghost" class="text-zinc-400">
-                                <flux:icon name="minus" class="size-3" />
-                            </flux:button>
-                            <span class="w-8 text-center text-white">{{ $item['quantity'] }}</span>
-                            <flux:button wire:click="updateQuantity({{ $item['product']->id }}, {{ $item['quantity'] + 1 }})" size="sm" variant="ghost" class="text-zinc-400">
-                                <flux:icon name="plus" class="size-3" />
-                            </flux:button>
-                        </div>
-
-                        {{-- Line Total --}}
-                        <span class="w-24 text-right font-semibold text-white">
-                            €{{ number_format(($item['product']->price_in_cents * $item['quantity']) / 100, 2, ',', '.') }}
-                        </span>
-
-                        {{-- Remove --}}
-                        <flux:button wire:click="removeItem({{ $item['product']->id }})" size="sm" variant="ghost" class="text-red-400 hover:text-red-300">
-                            <flux:icon name="trash" class="size-4" />
-                        </flux:button>
+                    {{-- Table Headers --}}
+                    <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-4 border-b border-zinc-800 bg-zinc-900 text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                        <div class="col-span-6">Product</div>
+                        <div class="col-span-2 text-center">Aantal</div>
+                        <div class="col-span-2 text-right">Prijs</div>
+                        <div class="col-span-2 text-right">Totaal</div>
                     </div>
-                @endforeach
+
+                    {{-- Items --}}
+                    @foreach($this->cartItems as $item)
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 border-b border-zinc-800 last:border-0 items-center hover:bg-white/[0.02] transition" wire:key="cart-{{ $item['product']->id }}">
+
+                            {{-- Product Info --}}
+                            <div class="col-span-1 md:col-span-6 flex gap-4">
+                                <div class="w-20 h-20 md:w-24 md:h-24 rounded-lg bg-zinc-800 flex-shrink-0 overflow-hidden">
+                                    @if($item['product']->image_path)
+                                        <img src="{{ asset('storage/' . $item['product']->image_path) }}" alt="{{ $item['product']->name }}" class="h-full w-full object-cover">
+                                    @else
+                                        <div class="flex h-full w-full items-center justify-center text-zinc-600">
+                                            <flux:icon name="photo" class="size-8" />
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="flex flex-col justify-center">
+                                    <a href="{{ route('products.show', $item['product']->slug) }}" class="font-semibold text-white hover:text-purple-400 transition" wire:navigate>
+                                        {{ $item['product']->name }}
+                                    </a>
+                                    <p class="text-sm text-zinc-500 mt-1">{{ $item['product']->category->name ?? '' }}</p>
+                                    <button wire:click="removeItem({{ $item['product']->id }})" class="mt-2 flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition w-fit">
+                                        <flux:icon name="trash" class="size-3" />
+                                        Verwijderen
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- Quantity --}}
+                            <div class="col-span-1 md:col-span-2 flex justify-start md:justify-center">
+                                <div class="flex items-center border border-zinc-700 rounded-lg bg-zinc-900 h-10 w-28">
+                                    <button wire:click="updateQuantity({{ $item['product']->id }}, {{ $item['quantity'] - 1 }})" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center">
+                                        <flux:icon name="minus" class="size-3" />
+                                    </button>
+                                    <span class="w-full text-center text-sm font-medium text-white">{{ $item['quantity'] }}</span>
+                                    <button wire:click="updateQuantity({{ $item['product']->id }}, {{ $item['quantity'] + 1 }})" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center">
+                                        <flux:icon name="plus" class="size-3" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- Unit Price --}}
+                            <div class="hidden md:block md:col-span-2 text-right text-zinc-400 text-sm">
+                                {{ $item['product']->formattedPrice() }}
+                            </div>
+
+                            {{-- Line Total --}}
+                            <div class="col-span-1 md:col-span-2 flex justify-between md:justify-end items-center">
+                                <span class="md:hidden text-xs text-zinc-500">Totaal:</span>
+                                <span class="font-semibold text-white">
+                                    €{{ number_format(($item['product']->price_in_cents * $item['quantity']) / 100, 2, ',', '.') }}
+                                </span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="mt-6">
+                    <a href="{{ route('products.index') }}" class="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition w-fit" wire:navigate>
+                        <flux:icon name="arrow-left" class="size-4" />
+                        Verder winkelen
+                    </a>
+                </div>
             </div>
 
             {{-- Order Summary --}}
-            <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 h-fit sticky top-24">
-                <h2 class="text-lg font-semibold text-white mb-4">Overzicht</h2>
+            <div class="w-full lg:w-96 flex-shrink-0">
+                <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 sticky top-24">
+                    <h2 class="text-xl font-semibold text-white mb-6">Besteloverzicht</h2>
 
-                <div class="space-y-3 text-sm">
-                    <div class="flex justify-between text-zinc-400">
-                        <span>Subtotaal</span>
-                        <span>{{ $this->formattedTotal() }}</span>
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between text-sm text-zinc-300">
+                            <span>Subtotaal ({{ $this->cartItems->sum('quantity') }} items)</span>
+                            <span>{{ $this->formattedTotal() }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-zinc-300">
+                            <span>Verzending</span>
+                            <span class="text-green-400">Gratis</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-zinc-300">
+                            <span>BTW (21%)</span>
+                            <span>{{ $this->formattedVat() }}</span>
+                        </div>
                     </div>
-                    <div class="flex justify-between text-zinc-400">
-                        <span>Verzending</span>
-                        <span class="text-green-400">Gratis</span>
+
+                    <div class="border-t border-zinc-800 pt-4 mb-8">
+                        <div class="flex justify-between items-end">
+                            <span class="text-base font-medium text-white">Totaal</span>
+                            <div class="text-right">
+                                <span class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent">{{ $this->formattedTotal() }}</span>
+                                <p class="text-xs text-zinc-500 mt-1">Inclusief BTW</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="border-t border-zinc-800 pt-3 flex justify-between text-white font-semibold text-base">
-                        <span>Totaal</span>
-                        <span>{{ $this->formattedTotal() }}</span>
+
+                    <a href="{{ route('checkout.index') }}" class="flex items-center justify-center gap-2 w-full rounded-lg bg-purple-600 px-4 py-3 text-sm font-medium text-white hover:bg-purple-500 transition" wire:navigate>
+                        Afrekenen
+                        <flux:icon name="arrow-right" class="size-4" />
+                    </a>
+
+                    {{-- Security Info --}}
+                    <div class="mt-6 pt-6 border-t border-zinc-800 space-y-3">
+                        <div class="flex items-center gap-3 text-sm text-zinc-400">
+                            <flux:icon name="shield-check" class="size-5 text-green-400 flex-shrink-0" />
+                            <span>Veilige betaling via Stripe</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm text-zinc-400">
+                            <flux:icon name="arrow-uturn-left" class="size-5 flex-shrink-0" />
+                            <span>30 dagen bedenktijd</span>
+                        </div>
                     </div>
                 </div>
-
-                <a href="{{ route('checkout.index') }}" class="mt-6 block w-full rounded-lg bg-purple-600 px-4 py-3 text-center text-sm font-medium text-white hover:bg-purple-500 transition" wire:navigate>
-                    Afrekenen
-                </a>
-
-                <a href="{{ route('products.index') }}" class="mt-3 block w-full text-center text-sm text-zinc-400 hover:text-white transition" wire:navigate>
-                    Verder winkelen
-                </a>
             </div>
         </div>
     @endif

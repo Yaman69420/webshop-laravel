@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\Category;
 use App\Actions\Admin\CreateCategoryAction;
-use App\Actions\Admin\UpdateCategoryAction;
 use App\Actions\Admin\DeleteCategoryAction;
+use App\Actions\Admin\UpdateCategoryAction;
+use App\Models\Category;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\Computed;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 
@@ -16,8 +16,11 @@ new
 class extends Component
 {
     public bool $showModal = false;
+
     public bool $showDeleteModal = false;
+
     public ?int $editingId = null;
+
     public ?int $deletingId = null;
 
     #[Validate('required|string|max:255')]
@@ -79,7 +82,10 @@ class extends Component
 
 <div>
     <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-white">Categorieën</h1>
+        <div>
+            <h1 class="text-2xl font-bold text-white">Categorieën</h1>
+            <p class="text-sm text-zinc-400 mt-1">Beheer de productcategorieën.</p>
+        </div>
         <flux:button wire:click="create" variant="primary" class="bg-purple-600 hover:bg-purple-500">
             <flux:icon name="plus" class="size-4 mr-1" /> Nieuwe Categorie
         </flux:button>

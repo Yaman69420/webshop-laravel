@@ -3,9 +3,9 @@
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\Computed;
 use Livewire\Volt\Component;
 
 new
@@ -47,70 +47,99 @@ class extends Component
 ?>
 
 <div>
-    <h1 class="text-2xl font-bold text-white mb-8">Dashboard</h1>
-
-    {{-- KPI Cards --}}
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 mb-8">
-        <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-            <p class="text-sm text-zinc-400">Totale Omzet</p>
-            <p class="mt-2 text-2xl font-bold text-white">€{{ number_format($this->totalRevenue / 100, 2, ',', '.') }}</p>
-        </div>
-        <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-            <p class="text-sm text-zinc-400">Bestellingen</p>
-            <p class="mt-2 text-2xl font-bold text-white">{{ $this->totalOrders }}</p>
-        </div>
-        <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-            <p class="text-sm text-zinc-400">Producten</p>
-            <p class="mt-2 text-2xl font-bold text-white">{{ $this->totalProducts }}</p>
-        </div>
-        <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-            <p class="text-sm text-zinc-400">Klanten</p>
-            <p class="mt-2 text-2xl font-bold text-white">{{ $this->totalCustomers }}</p>
-        </div>
+    {{-- Header --}}
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-white">Dashboard</h1>
+        <p class="text-sm text-zinc-400 mt-1">Welkom terug! Hier is een overzicht van je webshop.</p>
     </div>
 
-    {{-- Recent Orders --}}
+    {{-- KPI Cards --}}
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4 mb-8">
+
+        {{-- Omzet --}}
+        <div class="relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+            <div class="absolute right-0 top-0 p-4 opacity-10">
+                <flux:icon name="banknotes" class="size-16 text-green-400" />
+            </div>
+            <p class="text-sm font-medium text-zinc-400 mb-1">Totale Omzet</p>
+            <p class="text-2xl font-bold text-white">€{{ number_format($this->totalRevenue / 100, 2, ',', '.') }}</p>
+        </div>
+
+        {{-- Bestellingen --}}
+        <div class="relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+            <div class="absolute right-0 top-0 p-4 opacity-10">
+                <flux:icon name="shopping-cart" class="size-16 text-purple-400" />
+            </div>
+            <p class="text-sm font-medium text-zinc-400 mb-1">Bestellingen</p>
+            <p class="text-2xl font-bold text-white">{{ $this->totalOrders }}</p>
+        </div>
+
+        {{-- Producten --}}
+        <div class="relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+            <div class="absolute right-0 top-0 p-4 opacity-10">
+                <flux:icon name="cube" class="size-16 text-blue-400" />
+            </div>
+            <p class="text-sm font-medium text-zinc-400 mb-1">Producten</p>
+            <p class="text-2xl font-bold text-white">{{ $this->totalProducts }}</p>
+        </div>
+
+        {{-- Klanten --}}
+        <div class="relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+            <div class="absolute right-0 top-0 p-4 opacity-10">
+                <flux:icon name="users" class="size-16 text-amber-400" />
+            </div>
+            <p class="text-sm font-medium text-zinc-400 mb-1">Klanten</p>
+            <p class="text-2xl font-bold text-white">{{ $this->totalCustomers }}</p>
+        </div>
+
+    </div>
+
+    {{-- Recent Orders Panel --}}
     <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-        <h2 class="text-lg font-semibold text-white mb-4">Recente Bestellingen</h2>
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-semibold text-white">Recente Bestellingen</h2>
+            <a href="{{ route('admin.orders') }}" wire:navigate class="text-sm text-purple-400 hover:text-purple-300 transition">
+                Bekijk alles
+            </a>
+        </div>
 
         @if($this->recentOrders->isEmpty())
-            <p class="text-zinc-500 text-sm">Nog geen bestellingen.</p>
+            <p class="text-sm text-zinc-500">Nog geen bestellingen.</p>
         @else
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="text-left text-zinc-400 border-b border-zinc-800">
-                            <th class="pb-3 font-medium">#</th>
-                            <th class="pb-3 font-medium">Klant</th>
-                            <th class="pb-3 font-medium">Totaal</th>
-                            <th class="pb-3 font-medium">Status</th>
-                            <th class="pb-3 font-medium">Datum</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-zinc-800">
-                        @foreach($this->recentOrders as $order)
-                            <tr class="text-zinc-300">
-                                <td class="py-3 font-mono text-zinc-500">#{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</td>
-                                <td class="py-3">{{ $order->user->name }}</td>
-                                <td class="py-3">{{ $order->formattedTotal() }}</td>
-                                <td class="py-3">
-                                    <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium
-                                        {{ match($order->status->color()) {
-                                            'yellow' => 'bg-yellow-500/10 text-yellow-400',
-                                            'blue' => 'bg-blue-500/10 text-blue-400',
-                                            'indigo' => 'bg-indigo-500/10 text-indigo-400',
-                                            'green' => 'bg-green-500/10 text-green-400',
-                                            'red' => 'bg-red-500/10 text-red-400',
-                                            default => 'bg-zinc-500/10 text-zinc-400',
-                                        } }}">
-                                        {{ $order->status->label() }}
-                                    </span>
-                                </td>
-                                <td class="py-3 text-zinc-500">{{ $order->created_at->format('d M Y') }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="space-y-4">
+                @foreach($this->recentOrders as $order)
+                    @php
+                        $initials = collect(explode(' ', $order->user->name))
+                            ->map(fn ($part) => strtoupper(substr($part, 0, 1)))
+                            ->take(2)
+                            ->implode('');
+                    @endphp
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-xs font-bold text-zinc-300">
+                            {{ $initials }}
+                        </div>
+                        <div class="min-w-0 flex-grow">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-white">{{ $order->user->name }}</span>
+                                <span class="text-sm font-semibold text-white">{{ $order->formattedTotal() }}</span>
+                            </div>
+                            <div class="mt-0.5 flex items-center justify-between">
+                                <span class="text-xs text-zinc-500">{{ $order->created_at->diffForHumans() }}</span>
+                                <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium
+                                    {{ match($order->status->color()) {
+                                        'yellow' => 'bg-yellow-500/10 text-yellow-400',
+                                        'blue' => 'bg-blue-500/10 text-blue-400',
+                                        'indigo' => 'bg-indigo-500/10 text-indigo-400',
+                                        'green' => 'bg-green-500/10 text-green-400',
+                                        'red' => 'bg-red-500/10 text-red-400',
+                                        default => 'bg-zinc-500/10 text-zinc-400',
+                                    } }}">
+                                    {{ $order->status->label() }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         @endif
     </div>

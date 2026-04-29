@@ -2,8 +2,9 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
             {{-- Logo --}}
-            <a href="{{ route('home') }}" class="text-xl font-bold tracking-wider text-white" wire:navigate>
-                NOVA
+            <a href="{{ route('home') }}" class="flex items-center gap-2" wire:navigate>
+                <flux:icon name="globe-alt" class="size-7 text-purple-400" />
+                <span class="text-xl font-bold tracking-wider bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent">NOVA</span>
             </a>
 
             {{-- Navigation Links --}}
@@ -16,15 +17,7 @@
             {{-- Right Side --}}
             <div class="flex items-center gap-4">
                 {{-- Cart --}}
-                <a href="{{ route('cart.index') }}" class="relative text-zinc-400 hover:text-white transition" wire:navigate>
-                    <flux:icon name="shopping-cart" class="size-5" />
-                    @php $cartCount = app(\App\Services\CartService::class)->count(); @endphp
-                    @if($cartCount > 0)
-                        <span class="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-purple-600 text-[10px] font-bold text-white">
-                            {{ $cartCount }}
-                        </span>
-                    @endif
-                </a>
+                <livewire:cart-count />
 
                 {{-- Auth --}}
                 @auth

@@ -150,7 +150,7 @@ class DatabaseSeeder extends Seeder
         // Past delivered order
         $pastOrder = Order::create([
             'user_id' => $user->id,
-            'status' => OrderStatus::Delivered,
+            'status' => OrderStatus::Paid,
             'total_in_cents' => 49900,
             'shipping_name' => 'Jan Doe',
             'shipping_address' => 'Straatnaam 123',

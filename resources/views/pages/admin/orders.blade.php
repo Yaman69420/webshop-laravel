@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Order;
-use App\Enums\OrderStatus;
 use App\Actions\Admin\UpdateOrderStatusAction;
+use App\Enums\OrderStatus;
+use App\Models\Order;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
-use Livewire\Attributes\Computed;
-use Livewire\WithPagination;
 use Livewire\Volt\Component;
+use Livewire\WithPagination;
 
 new
 #[Layout('layouts.admin')]
@@ -40,7 +40,10 @@ class extends Component
 ?>
 
 <div>
-    <h1 class="text-2xl font-bold text-white mb-6">Bestellingen</h1>
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-white">Bestellingen</h1>
+        <p class="text-sm text-zinc-400 mt-1">Beheer en volg alle bestellingen.</p>
+    </div>
 
     <div class="mb-6">
         <flux:select wire:model.live="status" class="w-48">
@@ -68,7 +71,10 @@ class extends Component
                     @foreach($this->orders as $order)
                         <tr class="text-zinc-300 hover:bg-zinc-800/50">
                             <td class="px-4 py-3 font-mono text-zinc-500">#{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</td>
-                            <td class="px-4 py-3 text-white">{{ $order->user->name }}</td>
+                            <td class="px-4 py-3">
+                                <p class="font-medium text-white">{{ $order->user->name }}</p>
+                                <p class="text-xs text-zinc-500">{{ $order->user->email }}</p>
+                            </td>
                             <td class="px-4 py-3">{{ $order->formattedTotal() }}</td>
                             <td class="px-4 py-3">
                                 <span class="rounded-full px-2 py-0.5 text-xs font-medium bg-{{ $order->status->color() }}-500/10 text-{{ $order->status->color() }}-400">
