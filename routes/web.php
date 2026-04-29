@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -37,6 +38,14 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->group(function () {
     Volt::route('/orders', 'admin.orders')->name('admin.orders');
     Volt::route('/customers', 'admin.customers')->name('admin.customers');
     Volt::route('/customers/{user}', 'admin.customer-detail')->name('admin.customers.show');
+});
+
+// ──────────────────────────────────────────────
+// Social Auth Routes
+// ──────────────────────────────────────────────
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('social.redirect');
+    Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
 });
 
 require __DIR__.'/settings.php';
