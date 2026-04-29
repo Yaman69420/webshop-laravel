@@ -112,7 +112,7 @@ class extends Component
                             </div>
                         @endif
                         <div class="absolute top-3 right-3">
-                            <span class="inline-flex rounded-full bg-purple-500/20 border border-purple-500/30 px-2.5 py-0.5 text-xs font-medium text-purple-300">
+                            <span class="inline-flex rounded-full bg-purple-600 px-2.5 py-0.5 text-xs font-semibold text-white shadow-lg">
                                 Nieuw
                             </span>
                         </div>
@@ -126,7 +126,7 @@ class extends Component
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-lg font-bold text-white">{{ $product->formattedPrice() }}</span>
-                            <button wire:click.prevent="addToCart({{ $product->id }})"
+                            <button wire:click.stop="addToCart({{ $product->id }})"
                                     class="rounded-lg border border-zinc-700 p-2 text-zinc-400 hover:border-purple-500 hover:text-purple-400 transition"
                                     aria-label="Toevoegen aan winkelwagen">
                                 <flux:icon name="shopping-cart" class="size-5" />

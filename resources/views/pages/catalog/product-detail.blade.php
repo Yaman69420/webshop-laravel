@@ -39,6 +39,20 @@ class extends Component
         $this->dispatch('cart-updated');
     }
 
+    public function increment(): void
+    {
+        if ($this->quantity < $this->product->stock) {
+            $this->quantity++;
+        }
+    }
+
+    public function decrement(): void
+    {
+        if ($this->quantity > 1) {
+            $this->quantity--;
+        }
+    }
+
     public function addRelatedToCart(int $productId): void
     {
         app(AddToCartAction::class)->execute($productId, 1);
@@ -108,11 +122,11 @@ class extends Component
             @if($product->stock > 0)
                 <div class="mt-8 flex flex-col sm:flex-row gap-4">
                     <div class="flex items-center border border-zinc-700 rounded-lg bg-zinc-900 h-12 w-32">
-                        <button wire:click="$set('quantity', max(1, quantity - 1))" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center justify-center">
+                        <button wire:click="decrement" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center justify-center">
                             <flux:icon name="minus" class="size-4" />
                         </button>
                         <span class="w-full text-center text-white font-medium">{{ $quantity }}</span>
-                        <button wire:click="$set('quantity', min({{ $product->stock }}, quantity + 1))" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center justify-center">
+                        <button wire:click="increment" class="px-3 text-zinc-400 hover:text-white transition h-full flex items-center justify-center">
                             <flux:icon name="plus" class="size-4" />
                         </button>
                     </div>
