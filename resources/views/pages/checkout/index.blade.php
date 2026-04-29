@@ -58,7 +58,7 @@ class extends Component
             'name' => $item['product']->name,
             'price_in_cents' => $item['product']->price_in_cents,
             'quantity' => $item['quantity'],
-        ])->all();
+        ])->values()->all();
 
         // Create Stripe Checkout Session
         $successUrl = route('checkout.success').'?session_id={CHECKOUT_SESSION_ID}';
