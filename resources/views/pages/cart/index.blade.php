@@ -1,9 +1,11 @@
 <?php
 
+use App\Actions\Cart\RemoveFromCartAction;
+use App\Actions\Cart\UpdateCartItemAction;
 use App\Services\CartService;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
-use Livewire\Attributes\Computed;
 use Livewire\Volt\Component;
 
 new
@@ -31,26 +33,35 @@ class extends Component
 
     public function updateQuantity(int $productId, int $quantity): void
     {
-        app(\App\Actions\Cart\UpdateCartItemAction::class)->execute($productId, $quantity);
+        app(UpdateCartItemAction::class)->execute($productId, $quantity);
         unset($this->cartItems, $this->totalInCents, $this->vatInCents);
         $this->dispatch('cart-updated');
     }
 
+    public string $removedProduct = '';
+
     public function removeItem(int $productId): void
     {
-        app(\App\Actions\Cart\RemoveFromCartAction::class)->execute($productId);
+        $product = $this->cartItems->firstWhere('product.id', $productId);
+
+        app(RemoveFromCartAction::class)->execute($productId);
         unset($this->cartItems, $this->totalInCents, $this->vatInCents);
+
+        if ($product) {
+            $this->removedProduct = $product['product']->name;
+        }
+
         $this->dispatch('cart-updated');
     }
 
     public function formattedTotal(): string
     {
-        return '€' . number_format($this->totalInCents / 100, 2, ',', '.');
+        return '€'.number_format($this->totalInCents / 100, 2, ',', '.');
     }
 
     public function formattedVat(): string
     {
-        return '€' . number_format($this->vatInCents / 100, 2, ',', '.');
+        return '€'.number_format($this->vatInCents / 100, 2, ',', '.');
     }
 }
 
@@ -58,6 +69,30 @@ class extends Component
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
     <h1 class="text-3xl font-bold text-white mb-8">Winkelmand</h1>
+
+    {{-- Remove notification toast --}}
+    @if($removedProduct)
+        <div
+            x-data="{ show: true }"
+            x-show="show"
+            x-init="setTimeout(() => show = false, 3000)"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-2"
+            class="fixed top-6 right-6 z-50 flex items-center gap-3 rounded-xl border border-red-500/20 bg-zinc-900 px-4 py-3 shadow-xl"
+        >
+            <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-500/10">
+                <flux:icon name="trash" class="size-4 text-red-400" />
+            </div>
+            <p class="text-sm text-white">
+                <span class="font-medium">{{ $removedProduct }}</span>
+                <span class="text-zinc-400"> verwijderd uit je winkelmandje.</span>
+            </p>
+            <button @click="show = false" class="ml-2 text-zinc-500 hover:text-white transition">
+                <flux:icon name="x-mark" class="size-4" />
+            </button>
+        </div>
+    @endif
 
     @if($this->cartItems->isEmpty())
         <div class="flex flex-col items-center justify-center py-16 text-center">
