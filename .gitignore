@@ -28,3 +28,5 @@ yarn-error.log
 /.junie
 /.gemini
 /.mcp.json
+test_output.txt
+test_output_utf8.txt

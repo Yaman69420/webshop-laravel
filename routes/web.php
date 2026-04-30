@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\QrLoginController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -18,7 +19,7 @@ Volt::route('/cart', 'cart.index')->name('cart.index');
 // Auth-protected Storefront Routes
 // ──────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::redirect('/dashboard', '/')->name('dashboard');
+    Route::get('/home', fn () => redirect('/'))->name('dashboard');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -29,9 +30,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ──────────────────────────────────────────────
-// Admin Routes
+// Admin Routes (under /dashboard)
 // ──────────────────────────────────────────────
-Route::middleware(['auth', 'is_admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'is_admin'])->prefix('dashboard')->group(function () {
     Volt::route('/', 'admin.dashboard')->name('admin.dashboard');
     Volt::route('/products', 'admin.products')->name('admin.products');
     Volt::route('/categories', 'admin.categories')->name('admin.categories');
@@ -46,6 +47,21 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('social.redirect');
     Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
+});
+
+// ──────────────────────────────────────────────
+// QR-code Login Routes
+// ──────────────────────────────────────────────
+Route::prefix('qr-login')->name('qr-login.')->group(function () {
+    Route::middleware(['guest', 'throttle:qr-login'])->group(function () {
+        // Handled by Livewire: start, status, consume
+    });
+
+    Route::middleware(['auth', 'throttle:qr-login'])->group(function () {
+        Route::get('/scan', [QrLoginController::class, 'scan'])->name('scan');
+        Route::post('/confirm', [QrLoginController::class, 'confirm'])->name('confirm');
+        Route::post('/deny', [QrLoginController::class, 'deny'])->name('deny');
+    });
 });
 
 require __DIR__.'/settings.php';
