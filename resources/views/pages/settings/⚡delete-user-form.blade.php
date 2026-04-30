@@ -4,15 +4,15 @@ use Livewire\Component;
 
 new class extends Component {}; ?>
 
-<section class="mt-10 space-y-6">
-    <div class="relative mb-5">
-        <flux:heading>{{ __('Delete account') }}</flux:heading>
-        <flux:subheading>{{ __('Delete your account and all of its resources') }}</flux:subheading>
+<section class="space-y-4">
+    <div>
+        <h3 class="text-base font-semibold text-red-400">Account verwijderen</h3>
+        <p class="text-sm text-zinc-400 mt-1">Verwijder je account en alle bijbehorende gegevens permanent.</p>
     </div>
 
     <flux:modal.trigger name="confirm-user-deletion">
         <flux:button variant="danger" data-test="delete-user-button">
-            {{ __('Delete account') }}
+            Account verwijderen
         </flux:button>
     </flux:modal.trigger>
 
