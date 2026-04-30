@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\QrLoginStatus;
 use App\Models\QrLoginSession;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -14,6 +15,6 @@ Artisan::command('inspire', function () {
  */
 Schedule::call(function () {
     QrLoginSession::where('expires_at', '<', now())
-        ->where('status', QrLoginSession::STATUS_PENDING)
-        ->update(['status' => QrLoginSession::STATUS_EXPIRED]);
+        ->where('status', QrLoginStatus::Pending)
+        ->update(['status' => QrLoginStatus::Expired]);
 })->everyMinute()->name('qr-login:prune-expired');

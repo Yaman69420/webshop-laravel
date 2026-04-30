@@ -231,5 +231,28 @@ Verwijderen is altijd soft — data gaat nooit permanent verloren en kan worden 
 ## Bekende beperkingen
 
 - Social login vereist eigen OAuth credentials (zie sectie hierboven) — gedeelde test credentials worden niet meegeleverd in de repo.
-- Stripe webhooks zijn niet geïmplementeerd (niet vereist). De betaалverificatie gebeurt via de redirect flow.
-- QR-code login is niet geïmplementeerd.
+- Stripe webhooks zijn niet geïmplementeerd (niet vereist). De betaalverificatie gebeurt via de redirect flow.
+
+---
+
+## QR-code login
+
+Gebruikers kunnen inloggen op desktop door een QR-code te scannen met een mobiel toestel waarop ze al ingelogd zijn.
+
+### Flow
+
+1. Klik op **"Login met QR-code"** op de loginpagina
+2. Scan de QR-code met je telefoon (je moet al ingelogd zijn)
+3. Bevestig of weiger de login op je telefoon
+4. Na bevestiging wordt de desktop automatisch ingelogd
+
+### Architectuur
+
+De QR-login volgt dezelfde patronen als de rest van de applicatie:
+
+- **Actions:** `app/Actions/QrLogin/` — `StartQrSessionAction`, `ConfirmQrLoginAction`, `DenyQrLoginAction`, `ConsumeQrLoginAction`
+- **Service:** `app/Services/QrLoginService.php` — token generatie, hashing, lookup
+- **Enum:** `app/Enums/QrLoginStatus.php` — status values met `label()` en `color()`
+- **Model:** `app/Models/QrLoginSession.php` — Eloquent model met scopes en state transitions
+- **Controller:** `app/Http/Controllers/Auth/QrLoginController.php` — dunne controller die delegeert naar Actions
+

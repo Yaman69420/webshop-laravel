@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Enums\QrLoginStatus;
 use App\Models\QrLoginSession;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -94,7 +95,7 @@ class QrLoginTest extends TestCase
             ->post(route('qr-login.confirm'), ['token' => $token]);
 
         $session = QrLoginSession::first();
-        $this->assertEquals(QrLoginSession::STATUS_APPROVED, $session->status);
+        $this->assertEquals(QrLoginStatus::Approved, $session->status);
         $this->assertEquals($user->id, $session->user_id);
         $this->assertNotNull($session->approved_at);
     }
@@ -110,7 +111,7 @@ class QrLoginTest extends TestCase
             ->post(route('qr-login.deny'), ['token' => $token]);
 
         $session = QrLoginSession::first();
-        $this->assertEquals(QrLoginSession::STATUS_DENIED, $session->status);
+        $this->assertEquals(QrLoginStatus::Denied, $session->status);
     }
 
     public function test_desktop_can_consume_approved_token(): void
@@ -136,7 +137,7 @@ class QrLoginTest extends TestCase
 
         // Verify token is consumed
         $session->refresh();
-        $this->assertEquals(QrLoginSession::STATUS_CONSUMED, $session->status);
+        $this->assertEquals(QrLoginStatus::Consumed, $session->status);
         $this->assertNotNull($session->consumed_at);
     }
 
@@ -148,7 +149,7 @@ class QrLoginTest extends TestCase
         // Create a session that has already been consumed
         QrLoginSession::create([
             'token_hash' => hash('sha256', $plainToken),
-            'status' => QrLoginSession::STATUS_CONSUMED,
+            'status' => QrLoginStatus::Consumed,
             'user_id' => $user->id,
             'expires_at' => now()->addMinutes(2),
             'approved_at' => now()->subSeconds(30),

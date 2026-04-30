@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\QrLoginStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -21,26 +22,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class QrLoginSession extends Model
 {
     /**
-     * Valid status transitions for the QR login flow.
-     * pending → approved | denied | expired
-     * approved → consumed
-     */
-    public const STATUS_PENDING = 'pending';
-
-    public const STATUS_APPROVED = 'approved';
-
-    public const STATUS_DENIED = 'denied';
-
-    public const STATUS_CONSUMED = 'consumed';
-
-    public const STATUS_EXPIRED = 'expired';
-
-    /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
+            'status' => QrLoginStatus::class,
             'expires_at' => 'datetime',
             'approved_at' => 'datetime',
             'consumed_at' => 'datetime',
@@ -63,7 +50,7 @@ class QrLoginSession extends Model
      */
     public function scopePending(Builder $query): Builder
     {
-        return $query->where('status', self::STATUS_PENDING);
+        return $query->where('status', QrLoginStatus::Pending);
     }
 
     /**
@@ -93,7 +80,7 @@ class QrLoginSession extends Model
     public function markApproved(User $user): void
     {
         $this->update([
-            'status' => self::STATUS_APPROVED,
+            'status' => QrLoginStatus::Approved,
             'user_id' => $user->id,
             'approved_at' => now(),
         ]);
@@ -107,7 +94,7 @@ class QrLoginSession extends Model
     public function markConsumed(): void
     {
         $this->update([
-            'status' => self::STATUS_CONSUMED,
+            'status' => QrLoginStatus::Consumed,
             'consumed_at' => now(),
         ]);
     }
@@ -118,17 +105,7 @@ class QrLoginSession extends Model
     public function markDenied(): void
     {
         $this->update([
-            'status' => self::STATUS_DENIED,
+            'status' => QrLoginStatus::Denied,
         ]);
-    }
-
-    /**
-     * Find a QR login session by its plain-text token.
-     *
-     * @security Hashes the token before lookup — the raw token is never stored.
-     */
-    public static function findByToken(string $plainToken): ?self
-    {
-        return static::where('token_hash', hash('sha256', $plainToken))->first();
     }
 }
