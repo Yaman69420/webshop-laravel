@@ -10,14 +10,23 @@ new class extends Component {
 
     public string $password = '';
 
+    public bool $isSocialUser;
+
+    public function mount(): void
+    {
+        $this->isSocialUser = is_null(Auth::user()->password);
+    }
+
     /**
      * Delete the currently authenticated user.
      */
     public function deleteUser(Logout $logout): void
     {
-        $this->validate([
-            'password' => $this->currentPasswordRules(),
-        ]);
+        if (! $this->isSocialUser) {
+            $this->validate([
+                'password' => $this->currentPasswordRules(),
+            ]);
+        }
 
         tap(Auth::user(), $logout(...))->delete();
 
@@ -30,11 +39,14 @@ new class extends Component {
         <div>
             <flux:heading size="lg">Weet je het zeker?</flux:heading>
             <flux:subheading>
-                Zodra je account is verwijderd, worden alle gegevens permanent gewist. Voer je wachtwoord in om te bevestigen.
+                Zodra je account is verwijderd, worden alle gegevens permanent gewist.
+                @if(! $isSocialUser) Voer je wachtwoord in om te bevestigen. @endif
             </flux:subheading>
         </div>
 
-        <flux:input wire:model="password" label="Wachtwoord" type="password" viewable />
+        @if(! $isSocialUser)
+            <flux:input wire:model="password" label="Wachtwoord" type="password" viewable />
+        @endif
 
         <div class="flex justify-end space-x-2 rtl:space-x-reverse">
             <flux:modal.close>

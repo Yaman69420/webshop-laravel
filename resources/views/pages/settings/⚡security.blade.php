@@ -22,6 +22,8 @@ class extends Component {
     public string $password = '';
     public string $password_confirmation = '';
 
+    public bool $isSocialUser;
+
     public bool $canManageTwoFactor;
 
     public bool $twoFactorEnabled;
@@ -33,6 +35,7 @@ class extends Component {
      */
     public function mount(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
     {
+        $this->isSocialUser = is_null(auth()->user()->password);
         $this->canManageTwoFactor = Features::canManageTwoFactorAuthentication();
 
         if ($this->canManageTwoFactor) {
@@ -90,18 +93,34 @@ class extends Component {
     }
 }; ?>
 
-<x-pages::settings.layout heading="Wachtwoord wijzigen" subheading="Gebruik een lang, willekeurig wachtwoord om je account veilig te houden.">
-    <form method="POST" wire:submit="updatePassword" class="space-y-6">
-        <flux:input wire:model="current_password" label="Huidig wachtwoord" type="password" required autocomplete="current-password" viewable />
-        <flux:input wire:model="password" label="Nieuw wachtwoord" type="password" required autocomplete="new-password" viewable />
-        <flux:input wire:model="password_confirmation" label="Bevestig wachtwoord" type="password" required autocomplete="new-password" viewable />
-
-        <div>
-            <flux:button variant="primary" type="submit" data-test="update-password-button">
-                Opslaan
-            </flux:button>
+<x-pages::settings.layout heading="Beveiliging" subheading="Beheer je wachtwoord en twee-factor authenticatie.">
+    @if($isSocialUser)
+        <div class="flex items-center gap-4 rounded-xl border border-purple-500/20 bg-purple-500/5 px-4 py-3">
+            <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-purple-500/10">
+                <flux:icon name="shield-check" class="size-5 text-purple-400" />
+            </div>
+            <div>
+                <p class="text-sm font-medium text-white">Je logt in via {{ ucfirst(auth()->user()->social_provider) }}</p>
+                <p class="text-xs text-zinc-400">Je account is gekoppeld aan een social provider. Je hebt geen wachtwoord ingesteld.</p>
+            </div>
         </div>
-    </form>
+    @else
+        <div>
+            <h3 class="text-base font-semibold text-white mb-1">Wachtwoord wijzigen</h3>
+            <p class="text-sm text-zinc-400 mb-6">Gebruik een lang, willekeurig wachtwoord om je account veilig te houden.</p>
+        </div>
+        <form method="POST" wire:submit="updatePassword" class="space-y-6">
+            <flux:input wire:model="current_password" label="Huidig wachtwoord" type="password" required autocomplete="current-password" viewable />
+            <flux:input wire:model="password" label="Nieuw wachtwoord" type="password" required autocomplete="new-password" viewable />
+            <flux:input wire:model="password_confirmation" label="Bevestig wachtwoord" type="password" required autocomplete="new-password" viewable />
+
+            <div>
+                <flux:button variant="primary" type="submit" data-test="update-password-button">
+                    Opslaan
+                </flux:button>
+            </div>
+        </form>
+    @endif
 
     @if ($canManageTwoFactor)
         <div class="mt-10 border-t border-zinc-800 pt-8">
