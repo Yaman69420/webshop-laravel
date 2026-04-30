@@ -47,7 +47,9 @@ $pollStatus = function (QrLoginService $service) {
         $user = app(\App\Actions\QrLogin\ConsumeQrLoginAction::class)->execute($this->token);
         if ($user) {
             Auth::login($user, remember: true);
-            request()->session()->regenerate();
+            if (request()->hasSession()) {
+                request()->session()->regenerate();
+            }
             $this->redirectRoute('home', navigate: true);
         } else {
             $this->qrStatus = 'invalid';

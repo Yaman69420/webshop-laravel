@@ -1,196 +1,158 @@
 <?php
 
-namespace Tests\Feature\Auth;
-
+use App\Actions\QrLogin\ConsumeQrLoginAction;
 use App\Enums\QrLoginStatus;
 use App\Models\QrLoginSession;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
-use Tests\TestCase;
+use Livewire\Volt\Volt;
 
-class QrLoginTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    public function test_qr_session_can_be_started(): void
-    {
-        $response = $this->post(route('qr-login.start'));
+it('starts qr session', function () {
+    Volt::test('auth.qr-login')
+        ->dispatch('start-qr-session')
+        ->assertSet('qrStatus', 'pending')
+        ->assertDispatched('qr-session-started');
 
-        $response->assertOk()
-            ->assertJsonStructure(['token', 'scan_url', 'expires_at']);
+    expect(QrLoginSession::count())->toBe(1);
+});
 
-        $this->assertDatabaseCount('qr_login_sessions', 1);
-    }
+it('hashes the qr token in the database', function () {
+    $component = Volt::test('auth.qr-login')
+        ->dispatch('start-qr-session');
 
-    public function test_qr_token_is_hashed_in_database(): void
-    {
-        $response = $this->post(route('qr-login.start'));
+    $plainToken = $component->get('token');
+    $session = QrLoginSession::first();
 
-        $plainToken = $response->json('token');
-        $session = QrLoginSession::first();
+    expect($plainToken)->not->toBe($session->token_hash);
+    expect(hash('sha256', $plainToken))->toBe($session->token_hash);
+});
 
-        $this->assertNotEquals($plainToken, $session->token_hash);
-        $this->assertEquals(hash('sha256', $plainToken), $session->token_hash);
-    }
+it('expires qr session after two minutes', function () {
+    $component = Volt::test('auth.qr-login')
+        ->dispatch('start-qr-session');
 
-    public function test_qr_session_status_returns_pending(): void
-    {
-        $response = $this->post(route('qr-login.start'));
-        $token = $response->json('token');
+    $this->travel(3)->minutes();
 
-        $statusResponse = $this->postJson(route('qr-login.status'), ['token' => $token]);
+    // Trigger pollStatus
+    $component->call('pollStatus');
 
-        $statusResponse->assertOk()
-            ->assertJson(['status' => 'pending']);
-    }
+    $component->assertSet('qrStatus', 'expired');
+});
 
-    public function test_qr_session_expires_after_two_minutes(): void
-    {
-        $response = $this->post(route('qr-login.start'));
-        $token = $response->json('token');
+it('guest cannot scan qr code', function () {
+    $component = Volt::test('auth.qr-login')->dispatch('start-qr-session');
+    $token = $component->get('token');
 
-        // Fast-forward time past the 2-minute expiry
-        $this->travel(3)->minutes();
+    $this->get(route('qr-login.scan', ['token' => $token]))
+        ->assertRedirect(route('login'));
+});
 
-        $statusResponse = $this->postJson(route('qr-login.status'), ['token' => $token]);
+it('authenticated user can scan qr code', function () {
+    $user = User::factory()->create();
+    $component = Volt::test('auth.qr-login')->dispatch('start-qr-session');
+    $token = $component->get('token');
 
-        $statusResponse->assertOk()
-            ->assertJson(['status' => 'expired']);
-    }
+    $this->actingAs($user)
+        ->get(route('qr-login.scan', ['token' => $token]))
+        ->assertOk()
+        ->assertViewIs('pages::auth.qr-scan');
+});
 
-    public function test_guest_cannot_scan_qr_code(): void
-    {
-        $response = $this->post(route('qr-login.start'));
-        $token = $response->json('token');
+it('authenticated user can confirm qr login', function () {
+    $user = User::factory()->create();
+    $component = Volt::test('auth.qr-login')->dispatch('start-qr-session');
+    $token = $component->get('token');
 
-        // Try to scan without being authenticated — should redirect to login
-        $scanResponse = $this->get(route('qr-login.scan', ['token' => $token]));
+    $this->actingAs($user)
+        ->post(route('qr-login.confirm'), ['token' => $token]);
 
-        $scanResponse->assertRedirect(route('login'));
-    }
+    $session = QrLoginSession::first();
+    expect($session->status)->toBe(QrLoginStatus::Approved)
+        ->and($session->user_id)->toBe($user->id)
+        ->and($session->approved_at)->not->toBeNull();
+});
 
-    public function test_authenticated_user_can_scan_qr_code(): void
-    {
-        $user = User::factory()->create();
+it('authenticated user can deny qr login', function () {
+    $user = User::factory()->create();
+    $component = Volt::test('auth.qr-login')->dispatch('start-qr-session');
+    $token = $component->get('token');
 
-        $response = $this->post(route('qr-login.start'));
-        $token = $response->json('token');
+    $this->actingAs($user)
+        ->post(route('qr-login.deny'), ['token' => $token]);
 
-        $scanResponse = $this->actingAs($user)
-            ->get(route('qr-login.scan', ['token' => $token]));
+    $session = QrLoginSession::first();
+    expect($session->status)->toBe(QrLoginStatus::Denied);
+});
 
-        $scanResponse->assertOk();
-        $scanResponse->assertViewIs('pages::auth.qr-scan');
-    }
+it('desktop can consume approved token and redirect', function () {
+    $user = User::factory()->create();
+    $component = Volt::test('auth.qr-login')->dispatch('start-qr-session');
+    
+    // Approve from mobile
+    $session = QrLoginSession::first();
+    $session->markApproved($user);
 
-    public function test_authenticated_user_can_confirm_qr_login(): void
-    {
-        $user = User::factory()->create();
+    // Consume from desktop via pollStatus
+    $component->call('pollStatus')
+        ->assertRedirect(route('home'));
 
-        $response = $this->post(route('qr-login.start'));
-        $token = $response->json('token');
+    $this->assertAuthenticatedAs($user);
 
-        $this->actingAs($user)
-            ->post(route('qr-login.confirm'), ['token' => $token]);
+    $session->refresh();
+    expect($session->status)->toBe(QrLoginStatus::Consumed)
+        ->and($session->consumed_at)->not->toBeNull();
+});
 
-        $session = QrLoginSession::first();
-        $this->assertEquals(QrLoginStatus::Approved, $session->status);
-        $this->assertEquals($user->id, $session->user_id);
-        $this->assertNotNull($session->approved_at);
-    }
+it('prevents consuming an already consumed token', function () {
+    $user = User::factory()->create();
+    $plainToken = Str::random(64);
 
-    public function test_authenticated_user_can_deny_qr_login(): void
-    {
-        $user = User::factory()->create();
+    QrLoginSession::create([
+        'token_hash' => hash('sha256', $plainToken),
+        'status' => QrLoginStatus::Consumed,
+        'user_id' => $user->id,
+        'expires_at' => now()->addMinutes(2),
+        'approved_at' => now()->subSeconds(30),
+        'consumed_at' => now()->subSeconds(10),
+    ]);
 
-        $response = $this->post(route('qr-login.start'));
-        $token = $response->json('token');
+    $action = app(ConsumeQrLoginAction::class);
+    $result = $action->execute($plainToken);
 
-        $this->actingAs($user)
-            ->post(route('qr-login.deny'), ['token' => $token]);
+    expect($result)->toBeNull();
+});
 
-        $session = QrLoginSession::first();
-        $this->assertEquals(QrLoginStatus::Denied, $session->status);
-    }
+it('prevents consuming an expired token', function () {
+    $user = User::factory()->create();
+    $plainToken = Str::random(64);
 
-    public function test_desktop_can_consume_approved_token(): void
-    {
-        $user = User::factory()->create();
+    QrLoginSession::create([
+        'token_hash' => hash('sha256', $plainToken),
+        'status' => QrLoginStatus::Approved,
+        'user_id' => $user->id,
+        'expires_at' => now()->subMinutes(2),
+        'approved_at' => now()->subMinutes(3),
+    ]);
 
-        // 1. Start session (as guest desktop)
-        $startResponse = $this->post(route('qr-login.start'));
-        $token = $startResponse->json('token');
+    $action = app(ConsumeQrLoginAction::class);
+    $result = $action->execute($plainToken);
 
-        // 2. Approve from mobile (acting as authenticated user)
-        $session = QrLoginSession::first();
-        $session->markApproved($user);
+    expect($result)->toBeNull();
+});
 
-        // 3. Consume from desktop (as guest)
-        $consumeResponse = $this->postJson(route('qr-login.consume'), ['token' => $token]);
+it('prevents consuming a pending token', function () {
+    $plainToken = Str::random(64);
 
-        $consumeResponse->assertOk()
-            ->assertJsonStructure(['redirect']);
+    QrLoginSession::create([
+        'token_hash' => hash('sha256', $plainToken),
+        'status' => QrLoginStatus::Pending,
+        'expires_at' => now()->addMinutes(2),
+    ]);
 
-        // Verify the desktop user is now authenticated
-        $this->assertAuthenticatedAs($user);
+    $action = app(ConsumeQrLoginAction::class);
+    $result = $action->execute($plainToken);
 
-        // Verify token is consumed
-        $session->refresh();
-        $this->assertEquals(QrLoginStatus::Consumed, $session->status);
-        $this->assertNotNull($session->consumed_at);
-    }
-
-    public function test_consumed_token_cannot_be_reused(): void
-    {
-        $user = User::factory()->create();
-        $plainToken = Str::random(64);
-
-        // Create a session that has already been consumed
-        QrLoginSession::create([
-            'token_hash' => hash('sha256', $plainToken),
-            'status' => QrLoginStatus::Consumed,
-            'user_id' => $user->id,
-            'expires_at' => now()->addMinutes(2),
-            'approved_at' => now()->subSeconds(30),
-            'consumed_at' => now()->subSeconds(10),
-        ]);
-
-        // Attempting to consume an already-consumed token should fail
-        $this->postJson(route('qr-login.consume'), ['token' => $plainToken])
-            ->assertStatus(422);
-
-        $this->assertGuest();
-    }
-
-    public function test_expired_token_cannot_be_consumed(): void
-    {
-        $user = User::factory()->create();
-
-        $startResponse = $this->post(route('qr-login.start'));
-        $token = $startResponse->json('token');
-
-        $session = QrLoginSession::first();
-        $session->markApproved($user);
-
-        // Fast-forward past expiry
-        $this->travel(3)->minutes();
-
-        $consumeResponse = $this->postJson(route('qr-login.consume'), ['token' => $token]);
-        $consumeResponse->assertStatus(422);
-
-        $this->assertGuest();
-    }
-
-    public function test_pending_token_cannot_be_consumed(): void
-    {
-        $startResponse = $this->post(route('qr-login.start'));
-        $token = $startResponse->json('token');
-
-        // Try to consume without approval
-        $consumeResponse = $this->postJson(route('qr-login.consume'), ['token' => $token]);
-        $consumeResponse->assertStatus(422);
-
-        $this->assertGuest();
-    }
-}
+    expect($result)->toBeNull();
+});

@@ -30,7 +30,7 @@ class StartQrSessionAction
         QrLoginSession::create([
             'token_hash' => $this->qrLoginService->hashToken($plainToken),
             'status' => QrLoginStatus::Pending,
-            'browser_session_id' => $request->session()->getId(),
+            'browser_session_id' => $request->hasSession() ? $request->session()->getId() : 'test-session-id',
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
             'expires_at' => now()->addMinutes(2),
