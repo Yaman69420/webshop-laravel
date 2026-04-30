@@ -91,7 +91,7 @@ class extends Component
             @endif
             {{-- Nieuw badge --}}
             <div class="absolute top-4 left-4">
-                <span class="inline-flex rounded-full bg-purple-500/20 border border-purple-500/30 px-3 py-1 text-xs font-medium text-purple-300 backdrop-blur-sm">
+                <span class="inline-flex rounded-full bg-purple-600 px-3 py-1 text-xs font-semibold text-white shadow-lg">
                     Nieuw
                 </span>
             </div>
