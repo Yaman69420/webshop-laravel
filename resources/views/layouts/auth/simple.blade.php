@@ -3,18 +3,19 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
-        <div class="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-            <div class="flex w-full max-w-sm flex-col gap-2">
-                <a href="{{ route('home') }}" class="flex flex-col items-center gap-2 font-medium" wire:navigate>
-                    <span class="flex h-9 w-9 mb-1 items-center justify-center rounded-md">
-                        <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />
-                    </span>
-                    <span class="sr-only">{{ config('app.name', 'Laravel') }}</span>
-                </a>
-                <div class="flex flex-col gap-6">
-                    {{ $slot }}
+    <body class="min-h-screen bg-zinc-950 antialiased">
+        <div class="flex min-h-screen flex-col items-center justify-center px-4 py-12">
+            {{-- NOVA logo --}}
+            <a href="{{ route('home') }}" class="mb-8 flex flex-col items-center gap-3" wire:navigate>
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-600 shadow-lg shadow-purple-900/40">
+                    <x-app-logo-icon class="size-7 fill-current text-white" />
                 </div>
+                <span class="text-2xl font-bold tracking-widest text-white">NOVA</span>
+            </a>
+
+            {{-- Card --}}
+            <div class="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 shadow-xl backdrop-blur-sm">
+                {{ $slot }}
             </div>
         </div>
 
