@@ -43,6 +43,7 @@ class CreateOrderAction
                     'product_name' => $item['product']->name,
                     'product_price_in_cents' => $item['product']->price_in_cents,
                     'quantity' => $item['quantity'],
+                    'subtotal_in_cents' => $item['product']->price_in_cents * $item['quantity'],
                 ]);
 
                 // Decrement stock

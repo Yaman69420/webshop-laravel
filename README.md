@@ -76,10 +76,10 @@ php artisan migrate:fresh --seed
 ```
 
 Dit maakt alle tabellen aan en vult de database met:
-- 5 categorieën
-- 20 producten met afbeeldingen
+- 5 categorieën (Audio, Workspace, Accessoires, Gaming, Lifestyle)
+- 20 producten (6 met afbeeldingen, 14 met placeholder)
 - 1 admin gebruiker
-- 2 testklanten
+- 2 testklanten met voorbeeldbestellingen
 
 ### 6. Storage symlink
 
