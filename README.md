@@ -246,13 +246,22 @@ Gebruikers kunnen inloggen op desktop door een QR-code te scannen met een mobiel
 3. Bevestig of weiger de login op je telefoon
 4. Na bevestiging wordt de desktop automatisch ingelogd
 
+### Hoe lokaal te testen met je smartphone?
+
+> **Belangrijk voor localhost (zoals gevraagd in de opdracht):**
+> 1. Zorg dat je smartphone en computer op hetzelfde **wifi netwerk** zitten.
+> 2. Start de applicatie via `php artisan serve --host=0.0.0.0` zodat de dev server op je lokale netwerk (IP) bereikbaar is.
+> 3. Navigeer op je desktop naar de applicatie via je lokale netwerk-IP (bijv. `http://192.168.1.50:8000`). 
+> 4. *Bonus:* Zelfs als je de applicatie lokaal via `localhost:8000` opent, vervangt de applicatie automatisch `localhost` door jouw interne netwerk-IP voor de QR-code, zodat deze leesbaar is voor je telefoon.
+
 ### Architectuur
 
-De QR-login volgt dezelfde patronen als de rest van de applicatie:
+De QR-login volgt dezelfde patronen als de rest van de applicatie, maar maakt gebruik van Livewire in plaats van pure JSON API's:
 
+- **Polling:** Geheel via de opdracht: de loginpagina is een Livewire/Volt component (`livewire/auth/qr-login.blade.php`) dat via `wire:poll.2s` de backend scant zonder zware JavaScript.
+- **Frontend QR:** Voor de visuele QR-generatie is de frontend-library `qrcode.min.js` behouden, wat was toegestaan.
 - **Actions:** `app/Actions/QrLogin/` — `StartQrSessionAction`, `ConfirmQrLoginAction`, `DenyQrLoginAction`, `ConsumeQrLoginAction`
 - **Service:** `app/Services/QrLoginService.php` — token generatie, hashing, lookup
 - **Enum:** `app/Enums/QrLoginStatus.php` — status values met `label()` en `color()`
 - **Model:** `app/Models/QrLoginSession.php` — Eloquent model met scopes en state transitions
-- **Controller:** `app/Http/Controllers/Auth/QrLoginController.php` — dunne controller die delegeert naar Actions
 
