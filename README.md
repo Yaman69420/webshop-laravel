@@ -52,9 +52,11 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Open `.env` en pas de database aan:
+Open `.env` en pas het volgende aan:
 
 ```env
+APP_URL=http://localhost:8000
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
