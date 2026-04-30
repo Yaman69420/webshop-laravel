@@ -3,6 +3,7 @@
 use App\Models\Order;
 use App\Enums\OrderStatus;
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Volt\Component;
 
 new
@@ -13,9 +14,7 @@ class extends Component
 
     public function mount(Order $order): void
     {
-        if ($order->user_id !== auth()->id()) {
-            abort(403);
-        }
+        Gate::authorize('view', $order);
 
         $this->order = $order->load('items.product');
     }
