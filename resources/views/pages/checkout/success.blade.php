@@ -44,7 +44,10 @@ class extends Component
 
             // Only update if still pending (idempotent)
             if ($this->order->status === OrderStatus::Pending) {
-                $this->order->update(['status' => OrderStatus::Paid]);
+                $this->order->update([
+                    'status' => OrderStatus::Paid,
+                    'stripe_payment_intent_id' => $stripeSession->payment_intent,
+                ]);
                 $this->order->refresh();
             }
 
