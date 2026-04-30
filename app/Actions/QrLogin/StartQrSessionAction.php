@@ -38,12 +38,22 @@ class StartQrSessionAction
 
         $scanUrl = route('qr-login.scan', ['token' => $plainToken]);
 
-        // Fix for localhost: smartphones cannot resolve localhost.
-        // Replace it with the machine's local IP address automatically.
+        // Fix for localhost & Herd (.test): smartphones cannot resolve these.
+        // Replace it with the machine's local IP address automatically and add port 8000.
         $parsedUrl = parse_url($scanUrl);
-        if (in_array($parsedUrl['host'] ?? '', ['localhost', '127.0.0.1', '::1'])) {
-            $localIp = gethostbyname(gethostname());
-            $scanUrl = str_replace($parsedUrl['host'], $localIp, $scanUrl);
+        $host = $parsedUrl['host'] ?? '';
+        
+        if (in_array($host, ['localhost', '127.0.0.1', '::1']) || str_ends_with($host, '.test')) {
+            $localIp = env('LOCAL_IP', gethostbyname(gethostname()));
+            $scanUrl = str_replace($host, $localIp, $scanUrl);
+            
+            // Add port 8000 if missing, because artisan serve runs on 8000
+            if (!isset($parsedUrl['port'])) {
+                $scanUrl = str_replace($localIp, $localIp . ':8000', $scanUrl);
+            }
+            
+            // Force HTTP instead of HTTPS since artisan serve doesn't support SSL
+            $scanUrl = str_replace('https://', 'http://', $scanUrl);
         }
 
         return [
