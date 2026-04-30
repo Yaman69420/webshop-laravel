@@ -116,7 +116,7 @@ E-mail:     admin@nova.test
 Wachtwoord: password
 ```
 
-Admin paneel: `http://localhost:8000/admin`
+Admin paneel: `http://localhost:8000/dashboard`
 
 ### Testklanten
 
