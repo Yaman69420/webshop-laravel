@@ -36,9 +36,19 @@ class StartQrSessionAction
             'expires_at' => now()->addMinutes(2),
         ]);
 
+        $scanUrl = route('qr-login.scan', ['token' => $plainToken]);
+
+        // Fix for localhost: smartphones cannot resolve localhost.
+        // Replace it with the machine's local IP address automatically.
+        $parsedUrl = parse_url($scanUrl);
+        if (in_array($parsedUrl['host'] ?? '', ['localhost', '127.0.0.1', '::1'])) {
+            $localIp = gethostbyname(gethostname());
+            $scanUrl = str_replace($parsedUrl['host'], $localIp, $scanUrl);
+        }
+
         return [
             'token' => $plainToken,
-            'scan_url' => route('qr-login.scan', ['token' => $plainToken]),
+            'scan_url' => $scanUrl,
             'expires_at' => now()->addMinutes(2)->toIso8601String(),
         ];
     }

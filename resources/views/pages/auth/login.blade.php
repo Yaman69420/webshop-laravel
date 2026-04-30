@@ -1,5 +1,18 @@
 <x-layouts::auth :title="__('Inloggen')">
-    <div class="flex flex-col gap-6" x-data="qrLogin()">
+    <div class="flex flex-col gap-6" x-data="{ qrMode: false }" @qr-session-started.window="qrMode = true; $nextTick(() => { 
+            const container = document.getElementById('qr-code-container');
+            if (container) {
+                container.innerHTML = '';
+                new QRCode(container, {
+                    text: $event.detail.scanUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M,
+                });
+            }
+        })">
         <template x-if="!qrMode">
             <x-auth-header :title="__('Inloggen op je account')" :description="__('Vul hieronder je e-mailadres en wachtwoord in om in te loggen')" />
         </template>
@@ -11,95 +24,19 @@
         <x-auth-session-status class="text-center" :status="session('status')" />
 
         {{-- QR Login Section --}}
-        <template x-if="qrMode">
-            <div class="flex flex-col items-center gap-4">
-                {{-- Status: Loading --}}
-                <template x-if="qrStatus === 'loading'">
-                    <div class="flex flex-col items-center gap-2 py-4">
-                        <svg class="size-6 animate-spin text-zinc-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                        </svg>
-                        <span class="text-sm text-zinc-400">QR-code laden...</span>
-                    </div>
-                </template>
+        <div x-show="qrMode" x-cloak>
+            <livewire:auth.qr-login />
 
-                {{-- Status: Pending (show QR) --}}
-                <template x-if="qrStatus === 'pending'">
-                    <div class="flex flex-col items-center gap-3">
-                        <div id="qr-code-container" class="rounded-lg bg-white p-3"></div>
-
-                        <div class="flex items-center gap-2 text-sm text-zinc-400">
-                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                            <span>Verloopt over <strong x-text="countdown" class="text-zinc-200"></strong>s</span>
-                        </div>
-                        <p class="text-center text-xs text-zinc-500">
-                            Scan deze QR-code met je telefoon waarop je al bent ingelogd.
-                        </p>
-                    </div>
-                </template>
-
-                {{-- Status: Approved (consuming) --}}
-                <template x-if="qrStatus === 'approved'">
-                    <div class="flex flex-col items-center gap-2 py-4">
-                        <svg class="size-8 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        <span class="text-sm font-medium text-green-400">Login goedgekeurd! Je wordt doorgestuurd...</span>
-                    </div>
-                </template>
-
-                {{-- Status: Expired --}}
-                <template x-if="qrStatus === 'expired'">
-                    <div class="flex flex-col items-center gap-3 py-4 text-center">
-                        <svg class="size-8 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        <span class="text-sm text-amber-400">De QR-code is vervallen en dient te worden vernieuwd.</span>
-                        <button @click="startQrSession()" class="text-sm text-zinc-400 underline hover:text-white">
-                            QR-code vernieuwen
-                        </button>
-                    </div>
-                </template>
-
-                {{-- Status: Invalid (Network error / Server error) --}}
-                <template x-if="qrStatus === 'invalid'">
-                    <div class="flex flex-col items-center gap-3 py-4 text-center">
-                        <svg class="size-8 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        <span class="text-sm text-red-400">Er is een fout opgetreden.</span>
-                        <button @click="startQrSession()" class="text-sm text-zinc-400 underline hover:text-white">
-                            Probeer opnieuw
-                        </button>
-                    </div>
-                </template>
-
-                {{-- Status: Denied --}}
-                <template x-if="qrStatus === 'denied'">
-                    <div class="flex flex-col items-center gap-3 py-4">
-                        <svg class="size-8 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        <span class="text-sm text-red-400">Login is geweigerd.</span>
-                        <button @click="startQrSession()" class="text-sm text-zinc-400 underline hover:text-white">
-                            Opnieuw proberen
-                        </button>
-                    </div>
-                </template>
-
-                {{-- Back to normal login --}}
-                <button @click="qrMode = false; cleanup()" class="text-sm text-zinc-400 underline hover:text-white">
+            {{-- Back to normal login --}}
+            <div class="flex justify-center mt-4">
+                <button @click="qrMode = false" class="text-sm text-zinc-400 underline hover:text-white">
                     &larr; Terug naar e-mail login
                 </button>
             </div>
-        </template>
+        </div>
 
         {{-- Normal Login Form --}}
-        <template x-if="!qrMode">
-            <div class="flex flex-col gap-6">
+        <div x-show="!qrMode" class="flex flex-col gap-6">
                 <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
                     @csrf
 
@@ -186,7 +123,8 @@
                 </div>
 
                 <button
-                    @click="qrMode = true; startQrSession()"
+                    @click="$dispatch('start-qr-session')"
+                    type="button"
                     class="flex items-center justify-center gap-2 rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-sm font-medium text-zinc-300 transition hover:border-zinc-500 hover:text-white w-full"
                     data-test="qr-login-button"
                 >
@@ -203,8 +141,7 @@
                         <flux:link :href="route('register')" wire:navigate class="text-white hover:text-zinc-200">{{ __('Registreren') }}</flux:link>
                     </div>
                 @endif
-            </div>
-        </template>
+        </div>
     </div>
 
     {{-- QR code JS library (loaded only when needed) --}}
@@ -212,174 +149,4 @@
             integrity="sha256-xUHvBjJ4hahBW8qN9gceFBibSFUzbe9PNttUvehITzY="
             crossorigin="anonymous"
             defer></script>
-
-    <script>
-        /**
-         * Alpine.js component for the QR login flow.
-         *
-         * @security All token handling happens server-side. The client only holds the
-         *           plain token temporarily for polling and QR display.
-         */
-        function qrLogin() {
-            return {
-                qrMode: false,
-                qrStatus: 'loading',       // loading | pending | approved | expired | denied | invalid
-                token: null,
-                countdown: 120,
-                pollInterval: null,
-                countdownInterval: null,
-                qrInstance: null,
-
-                /**
-                 * Start a new QR login session by calling the backend.
-                 */
-                async startQrSession() {
-                    this.cleanup();
-                    this.qrStatus = 'loading';
-                    this.countdown = 120;
-
-                    try {
-                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-                        const response = await fetch('{{ route("qr-login.start") }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': csrfToken,
-                                'Accept': 'application/json',
-                            },
-                        });
-
-                        if (!response.ok) {
-                            this.qrStatus = 'invalid';
-                            return;
-                        }
-
-                        const data = await response.json();
-                        this.token = data.token;
-                        this.qrStatus = 'pending';
-
-                        // Wait for DOM to render QR container, then generate QR
-                        this.$nextTick(() => {
-                            const container = document.getElementById('qr-code-container');
-                            if (container) {
-                                container.innerHTML = '';
-                                this.qrInstance = new QRCode(container, {
-                                    text: data.scan_url,
-                                    width: 200,
-                                    height: 200,
-                                    colorDark: '#000000',
-                                    colorLight: '#ffffff',
-                                    correctLevel: QRCode.CorrectLevel.M,
-                                });
-                            }
-                        });
-
-                        this.startPolling();
-                        this.startCountdown();
-                    } catch (error) {
-                        console.error('QR session start failed:', error);
-                        this.qrStatus = 'invalid';
-                    }
-                },
-
-                /**
-                 * Poll the status endpoint every 3 seconds.
-                 */
-                startPolling() {
-                    this.pollInterval = setInterval(async () => {
-                        if (!this.token) return;
-
-                        try {
-                            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-                            const response = await fetch('{{ route("qr-login.status") }}', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': csrfToken,
-                                    'Accept': 'application/json',
-                                },
-                                body: JSON.stringify({ token: this.token }),
-                            });
-
-                            if (!response.ok) {
-                                this.qrStatus = 'invalid';
-                                this.cleanup();
-                                return;
-                            }
-
-                            const data = await response.json();
-                            this.qrStatus = data.status;
-
-                            if (data.status === 'approved') {
-                                this.cleanup();
-                                await this.consumeToken();
-                            } else if (data.status === 'expired' || data.status === 'denied' || data.status === 'consumed') {
-                                this.cleanup();
-                            }
-                        } catch (error) {
-                            console.error('QR status poll failed:', error);
-                        }
-                    }, 3000);
-                },
-
-                /**
-                 * Countdown timer for token expiry.
-                 */
-                startCountdown() {
-                    this.countdownInterval = setInterval(() => {
-                        this.countdown--;
-                        if (this.countdown <= 0) {
-                            this.qrStatus = 'expired';
-                            this.cleanup();
-                        }
-                    }, 1000);
-                },
-
-                /**
-                 * Consume the approved token and redirect the user.
-                 *
-                 * @security Token is sent to the server for final authentication.
-                 */
-                async consumeToken() {
-                    try {
-                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-                        const response = await fetch('{{ route("qr-login.consume") }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': csrfToken,
-                                'Accept': 'application/json',
-                            },
-                            body: JSON.stringify({ token: this.token }),
-                        });
-
-                        const data = await response.json();
-
-                        if (response.ok && data.redirect) {
-                            window.location.href = data.redirect;
-                        } else {
-                            this.qrStatus = 'invalid';
-                        }
-                    } catch (error) {
-                        console.error('QR consume failed:', error);
-                        this.qrStatus = 'invalid';
-                    }
-                },
-
-                /**
-                 * Clean up intervals when leaving QR mode or on status change.
-                 */
-                cleanup() {
-                    if (this.pollInterval) {
-                        clearInterval(this.pollInterval);
-                        this.pollInterval = null;
-                    }
-                    if (this.countdownInterval) {
-                        clearInterval(this.countdownInterval);
-                        this.countdownInterval = null;
-                    }
-                },
-            };
-        }
-    </script>
 </x-layouts::auth>
