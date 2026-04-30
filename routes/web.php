@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\QrLoginController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -18,7 +19,7 @@ Volt::route('/cart', 'cart.index')->name('cart.index');
 // Auth-protected Storefront Routes
 // ──────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/home', fn() => redirect('/'))->name('dashboard');
+    Route::get('/home', fn () => redirect('/'))->name('dashboard');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -48,4 +49,21 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])->name('social.callback');
 });
 
-require __DIR__ . '/settings.php';
+// ──────────────────────────────────────────────
+// QR-code Login Routes
+// ──────────────────────────────────────────────
+Route::prefix('qr-login')->name('qr-login.')->group(function () {
+    Route::middleware(['guest', 'throttle:qr-login'])->group(function () {
+        Route::post('/start', [QrLoginController::class, 'start'])->name('start');
+        Route::get('/status/{token}', [QrLoginController::class, 'status'])->name('status');
+        Route::post('/consume', [QrLoginController::class, 'consume'])->name('consume');
+    });
+
+    Route::middleware(['auth', 'throttle:qr-login'])->group(function () {
+        Route::get('/scan', [QrLoginController::class, 'scan'])->name('scan');
+        Route::post('/confirm', [QrLoginController::class, 'confirm'])->name('confirm');
+        Route::post('/deny', [QrLoginController::class, 'deny'])->name('deny');
+    });
+});
+
+require __DIR__.'/settings.php';
