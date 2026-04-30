@@ -28,9 +28,13 @@ class QrLoginController extends Controller
     /**
      * Return the current status of a QR login session (for desktop polling).
      */
-    public function status(string $token, QrLoginService $service): JsonResponse
+    public function status(Request $request, QrLoginService $service): JsonResponse
     {
-        $session = $service->findByToken($token);
+        $request->validate([
+            'token' => ['required', 'string', 'size:64'],
+        ]);
+
+        $session = $service->findByToken($request->input('token'));
 
         if (! $session) {
             return response()->json(['status' => 'invalid'], 404);

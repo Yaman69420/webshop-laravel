@@ -18,3 +18,16 @@ Schedule::call(function () {
         ->where('status', QrLoginStatus::Pending)
         ->update(['status' => QrLoginStatus::Expired]);
 })->everyMinute()->name('qr-login:prune-expired');
+
+/**
+ * Delete old QR login sessions that are no longer needed.
+ */
+Schedule::call(function () {
+    QrLoginSession::where('created_at', '<', now()->subDay())
+        ->whereIn('status', [
+            QrLoginStatus::Expired,
+            QrLoginStatus::Consumed,
+            QrLoginStatus::Denied,
+        ])
+        ->delete();
+})->daily()->name('qr-login:cleanup-old');

@@ -190,7 +190,10 @@
     </div>
 
     {{-- QR code JS library (loaded only when needed) --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+            integrity="sha256-xUHvBjJ4hahBW8qN9gceFBibSFUzbe9PNttUvehITzY="
+            crossorigin="anonymous"
+            defer></script>
 
     <script>
         /**
@@ -269,8 +272,15 @@
                         if (!this.token) return;
 
                         try {
-                            const response = await fetch(`/qr-login/status/${this.token}`, {
-                                headers: { 'Accept': 'application/json' },
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                            const response = await fetch('{{ route("qr-login.status") }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken,
+                                    'Accept': 'application/json',
+                                },
+                                body: JSON.stringify({ token: this.token }),
                             });
 
                             if (!response.ok) {

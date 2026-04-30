@@ -39,7 +39,7 @@ class QrLoginTest extends TestCase
         $response = $this->post(route('qr-login.start'));
         $token = $response->json('token');
 
-        $statusResponse = $this->getJson(route('qr-login.status', ['token' => $token]));
+        $statusResponse = $this->postJson(route('qr-login.status'), ['token' => $token]);
 
         $statusResponse->assertOk()
             ->assertJson(['status' => 'pending']);
@@ -53,7 +53,7 @@ class QrLoginTest extends TestCase
         // Fast-forward time past the 2-minute expiry
         $this->travel(3)->minutes();
 
-        $statusResponse = $this->getJson(route('qr-login.status', ['token' => $token]));
+        $statusResponse = $this->postJson(route('qr-login.status'), ['token' => $token]);
 
         $statusResponse->assertOk()
             ->assertJson(['status' => 'expired']);

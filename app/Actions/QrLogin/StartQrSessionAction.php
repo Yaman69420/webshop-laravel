@@ -20,6 +20,11 @@ class StartQrSessionAction
      */
     public function execute(Request $request): array
     {
+        // Invalidate any previous pending sessions from this IP
+        QrLoginSession::where('ip_address', $request->ip())
+            ->where('status', QrLoginStatus::Pending)
+            ->update(['status' => QrLoginStatus::Expired]);
+
         $plainToken = $this->qrLoginService->generateToken();
 
         QrLoginSession::create([

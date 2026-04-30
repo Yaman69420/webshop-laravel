@@ -55,7 +55,7 @@ Route::middleware('guest')->group(function () {
 Route::prefix('qr-login')->name('qr-login.')->group(function () {
     Route::middleware(['guest', 'throttle:qr-login'])->group(function () {
         Route::post('/start', [QrLoginController::class, 'start'])->name('start');
-        Route::get('/status/{token}', [QrLoginController::class, 'status'])->name('status');
+        Route::post('/status', [QrLoginController::class, 'status'])->name('status');
         Route::post('/consume', [QrLoginController::class, 'consume'])->name('consume');
     });
 
