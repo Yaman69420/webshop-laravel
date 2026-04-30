@@ -10,16 +10,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
     'user_id', 'status', 'total_in_cents',
     'shipping_name', 'shipping_address', 'shipping_city', 'shipping_postal_code',
-    'stripe_session_id',
+    'stripe_session_id', 'stripe_payment_intent_id', 'order_number',
 ])]
 class Order extends Model
 {
     /** @use HasFactory<OrderFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected function casts(): array
     {
@@ -62,5 +63,16 @@ class Order extends Model
     public function formattedTotal(): string
     {
         return '€'.number_format($this->total_in_cents / 100, 2, ',', '.');
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (Order $order): void {
+            if (empty($order->order_number)) {
+                $order->updateQuietly([
+                    'order_number' => 'NOVA-'.str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
+                ]);
+            }
+        });
     }
 }

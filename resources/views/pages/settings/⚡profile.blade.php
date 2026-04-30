@@ -5,10 +5,14 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Profile settings')] class extends Component {
+new
+#[Layout('layouts.storefront')]
+#[Title('Profiel — NOVA')]
+class extends Component {
     use ProfileValidationRules;
 
     public string $name = '';
@@ -75,41 +79,33 @@ new #[Title('Profile settings')] class extends Component {
     }
 }; ?>
 
-<section class="w-full">
-    @include('partials.settings-heading')
+<x-pages::settings.layout heading="Profiel" subheading="Pas je naam en e-mailadres aan.">
+    <form wire:submit="updateProfileInformation" class="space-y-6">
+        <flux:input wire:model="name" label="Naam" type="text" required autofocus autocomplete="name" />
 
-    <flux:heading class="sr-only">{{ __('Profile settings') }}</flux:heading>
+        <div>
+            <flux:input wire:model="email" label="E-mailadres" type="email" required autocomplete="email" />
 
-    <x-pages::settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
-        <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
+            @if ($this->hasUnverifiedEmail)
+                <p class="mt-3 text-sm text-zinc-400">
+                    Je e-mailadres is nog niet geverifieerd.
+                    <button wire:click.prevent="resendVerificationNotification" class="text-purple-400 hover:text-purple-300 underline">
+                        Stuur verificatiemail opnieuw.
+                    </button>
+                </p>
+            @endif
+        </div>
 
-            <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+        <div>
+            <flux:button variant="primary" type="submit" data-test="update-profile-button">
+                Opslaan
+            </flux:button>
+        </div>
+    </form>
 
-                @if ($this->hasUnverifiedEmail)
-                    <div>
-                        <flux:text class="mt-4">
-                            {{ __('Your email address is unverified.') }}
-
-                            <flux:link class="text-sm cursor-pointer" wire:click.prevent="resendVerificationNotification">
-                                {{ __('Click here to re-send the verification email.') }}
-                            </flux:link>
-                        </flux:text>
-
-                    </div>
-                @endif
-            </div>
-
-            <div class="flex items-center gap-4">
-                <flux:button variant="primary" type="submit" data-test="update-profile-button">
-                    {{ __('Save') }}
-                </flux:button>
-            </div>
-        </form>
-
-        @if ($this->showDeleteUser)
+    @if ($this->showDeleteUser)
+        <div class="mt-10 border-t border-zinc-800 pt-8">
             <livewire:pages::settings.delete-user-form />
-        @endif
-    </x-pages::settings.layout>
-</section>
+        </div>
+    @endif
+</x-pages::settings.layout>

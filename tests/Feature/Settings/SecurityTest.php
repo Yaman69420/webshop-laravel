@@ -33,8 +33,8 @@ class SecurityTest extends TestCase
             ->withSession(['auth.password_confirmed_at' => time()])
             ->get(route('security.edit'))
             ->assertOk()
-            ->assertSee('Two-factor authentication')
-            ->assertSee('Enable 2FA');
+            ->assertSee('Twee-factor authenticatie')
+            ->assertSee('2FA inschakelen');
     }
 
     public function test_security_settings_page_requires_password_confirmation_when_enabled(): void
@@ -57,8 +57,8 @@ class SecurityTest extends TestCase
             ->withSession(['auth.password_confirmed_at' => time()])
             ->get(route('security.edit'))
             ->assertOk()
-            ->assertSee('Update password')
-            ->assertDontSee('Two-factor authentication');
+            ->assertSee('Wachtwoord wijzigen')
+            ->assertDontSee('Twee-factor authenticatie');
     }
 
     public function test_two_factor_authentication_disabled_when_confirmation_abandoned_between_requests(): void

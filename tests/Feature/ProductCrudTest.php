@@ -1,8 +1,8 @@
 <?php
 
 use App\Actions\Catalog\CreateProductAction;
-use App\Actions\Catalog\UpdateProductAction;
 use App\Actions\Catalog\DeleteProductAction;
+use App\Actions\Catalog\UpdateProductAction;
 use App\Models\Category;
 use App\Models\Product;
 
@@ -37,11 +37,24 @@ it('updates a product', function () {
         ->and($updated->price_in_cents)->toBe(2999);
 });
 
-it('deletes a product', function () {
+it('soft deletes a product', function () {
     $product = Product::factory()->create();
     $id = $product->id;
 
     app(DeleteProductAction::class)->execute($product);
 
-    expect(Product::find($id))->toBeNull();
+    expect(Product::find($id))->toBeNull()
+        ->and(Product::withTrashed()->find($id))->not->toBeNull()
+        ->and(Product::withTrashed()->find($id)->deleted_at)->not->toBeNull();
+});
+
+it('restores a soft deleted product', function () {
+    $product = Product::factory()->create();
+    $id = $product->id;
+
+    app(DeleteProductAction::class)->execute($product);
+    Product::withTrashed()->find($id)->restore();
+
+    expect(Product::find($id))->not->toBeNull()
+        ->and(Product::find($id)->deleted_at)->toBeNull();
 });

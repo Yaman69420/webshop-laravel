@@ -44,7 +44,10 @@ class extends Component
 
             // Only update if still pending (idempotent)
             if ($this->order->status === OrderStatus::Pending) {
-                $this->order->update(['status' => OrderStatus::Paid]);
+                $this->order->update([
+                    'status' => OrderStatus::Paid,
+                    'stripe_payment_intent_id' => $stripeSession->payment_intent,
+                ]);
                 $this->order->refresh();
             }
 
@@ -121,7 +124,7 @@ class extends Component
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between items-center">
                             <span class="text-zinc-400">Ordernummer</span>
-                            <span class="font-mono font-bold text-white">#{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</span>
+                            <span class="font-mono font-bold text-white">{{ $order->order_number }}</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-zinc-400">Totaalbedrag</span>

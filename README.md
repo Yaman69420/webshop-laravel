@@ -9,7 +9,7 @@ Een volwaardige webshop gebouwd in Laravel 13 met Livewire 4, Flux UI en Stripe 
 | Naam | Rol |
 |---|---|
 | Yaman Terkawi | Frontend — Livewire componenten, Flux UI views, admin CRUD, social login, feature tests, README |
-| Jan De Smet | Backend — migraties, models, Actions, Services, Stripe, Policies, middleware, unit tests, seeders |
+| Jan | Backend — migraties, models, Actions, Services, Stripe, Policies, middleware, unit tests, seeders |
 
 ---
 
@@ -52,9 +52,11 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Open `.env` en pas de database aan:
+Open `.env` en pas het volgende aan:
 
 ```env
+APP_URL=http://localhost:8000
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -76,10 +78,10 @@ php artisan migrate:fresh --seed
 ```
 
 Dit maakt alle tabellen aan en vult de database met:
-- 5 categorieën
-- 20 producten met afbeeldingen
+- 5 categorieën (Audio, Workspace, Accessoires, Gaming, Lifestyle)
+- 20 producten (6 met afbeeldingen, 14 met placeholder)
 - 1 admin gebruiker
-- 2 testklanten
+- 2 testklanten met voorbeeldbestellingen
 
 ### 6. Storage symlink
 
